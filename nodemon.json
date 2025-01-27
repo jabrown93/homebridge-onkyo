@@ -1,0 +1,9 @@
+{
+  "ignore": ["**/node_modules/**"],
+  "ext": "js",
+  "exec": "homebridge -U ./test/hbConfig -I -D",
+  "signal": "SIGTERM",
+  "env": {
+    "NODE_OPTIONS": "--trace-warnings"
+  }
+}

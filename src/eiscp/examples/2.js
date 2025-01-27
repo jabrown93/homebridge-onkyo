@@ -1,7 +1,7 @@
 /*jslint node:true nomen:true*/
 'use strict';
 var util = require('util'),
-    eiscp = require('../eiscp');
+  eiscp = require('../eiscp');
 
 /*
    Connect to receiver and send a command
@@ -14,9 +14,9 @@ eiscp.connect();
 //eiscp.connect({host: "10.0.0.5"});
 
 // Prints debugging info to the terminal
-eiscp.on("debug", util.log);
+eiscp.on('debug', util.log);
 // Prints errors to the terminal
-eiscp.on("error", util.log);
+eiscp.on('error', util.log);
 
 /*
   Here we listen to volume changes (but we close the connection after the first volume change)
@@ -26,23 +26,19 @@ eiscp.on("error", util.log);
   You could just as well remove the eiscp.command (further down) and change the volume with the volume knob on the receiver
 */
 eiscp.on('volume', function (arg) {
+  // Print received volume
+  console.log(util.format('\nVolume changed to: %s\n', arg));
 
-    // Print received volume
-    console.log(util.format("\nVolume changed to: %s\n", arg));
-
-    eiscp.close();
+  eiscp.close();
 });
 
 eiscp.on('connect', function () {
-
-    // Change the receiver volume to 22
-    eiscp.command("volume=22");
-	// Same thing below just written with different formats
-    //eiscp.command("volume:22");
-    //eiscp.command("volume 22");
-    //eiscp.command("main.volume=22");
-    //eiscp.command("main.volume:22");
-    //eiscp.command("main.volume 22");
-	
-
+  // Change the receiver volume to 22
+  eiscp.command('volume=22');
+  // Same thing below just written with different formats
+  //eiscp.command("volume:22");
+  //eiscp.command("volume 22");
+  //eiscp.command("main.volume=22");
+  //eiscp.command("main.volume:22");
+  //eiscp.command("main.volume 22");
 });
