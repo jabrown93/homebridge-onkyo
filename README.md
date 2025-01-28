@@ -1,11 +1,11 @@
 # homebridge-onkyo
 
 [![npm](https://img.shields.io/npm/dt/homebridge-onkyo.svg)](https://www.npmjs.com/package/homebridge-onkyo)
-[![npm](https://img.shields.io/npm/l/homebridge-onkyo.svg)](https://github.com/ToddGreenfield/homebridge-onkyo/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/l/homebridge-onkyo.svg)](https://github.com/jabrown93/homebridge-onkyo/blob/master/LICENSE)
 
 [![NPM Version](https://img.shields.io/npm/v/homebridge-onkyo.svg)](https://www.npmjs.com/package/homebridge-onkyo)
-![Node.js CI](https://github.com/ToddGreenfield/homebridge-onkyo/workflows/Node.js%20CI/badge.svg?branch=master)
-![CodeQL](https://github.com/ToddGreenfield/homebridge-onkyo/workflows/CodeQL/badge.svg)
+![Node.js CI](https://github.com/jabrown93/homebridge-onkyo/workflows/Node.js%20CI/badge.svg?branch=master)
+![CodeQL](https://github.com/jabrown93/homebridge-onkyo/workflows/CodeQL/badge.svg)
 
 Homebridge plugin for Onkyo Receivers
 Should work for all supported models as listed in the eiscp/eiscp-commands.json file. If your model is not listed, try TX-NR609.
@@ -17,7 +17,7 @@ Existing users of my original fork or gw-wiscon's be sure to update the "platfor
 
 # Changelog
 
-Changes are tracked via [Github Releases](https://github.com/ToddGreenfield/homebridge-onkyo/releases).
+Changes are tracked via [Github Releases](https://github.com/jabrown93/homebridge-onkyo/releases).
 
 # Volume Control
 
@@ -47,7 +47,7 @@ Example accessory config (needs to be added to the homebridge config.json):
                "model": "TX-NR609",
                "ip_address": "10.0.0.46",
                "poll_status_interval": "3000",
-               "name": "Receiver",
+               "name": "ReceiverConfig",
                "zone": "main",
                "default_input": "net",
                "default_volume": "10",
@@ -76,15 +76,15 @@ Example accessory config (needs to be added to the homebridge config.json):
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **platform**                 | (required) Must always be "Onkyo".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **receivers**                | (required) List of receiver accessories to create. Must contain at least 1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| Receiver Attributes          |
+| ReceiverConfig Attributes    |
 | ---------------------------- | ------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **name**                     | (required) The name you want to use for control of the Onkyo accessories.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **ip_address**               | (required) The internal ip address of your Onkyo.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **model**                    | (required) Must be a valid model listed in config.schema.json file. If your model is not listed, you can use the TX-NR609 if your model supports the Integra Serial Communication Protocol (ISCP).                                                                                                                                                                                                                                                                                                                                                    |
 | **poll_status_interval**     | (optional) Poll Status Interval. Defaults to 0 or no polling.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| **default_input**            | (optional) A valid source input. Default will use last known input. See output of 3.js in eiscp/examples for options.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **default_input**            | (optional) A valid source input. Default will use last known input. See output of 3.ts in eiscp/examples for options.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | **default_volume**           | (optional) Initial receiver volume upon powerup. This is the true volume number, not a percentage. Ignored if powerup from device knob or external app (like OnkyoRemote3).                                                                                                                                                                                                                                                                                                                                                                           |
-| **max_volume**               | (optional) Receiver volume max setting. This is a true volume number, not a percentage, and intended so there is not accidental setting of volume to 80. Ignored by external apps (like OnkyoRemote3). Defaults to 30.                                                                                                                                                                                                                                                                                                                                |
+| **max_volume**               | (optional) ReceiverConfig volume max setting. This is a true volume number, not a percentage, and intended so there is not accidental setting of volume to 80. Ignored by external apps (like OnkyoRemote3). Defaults to 30.                                                                                                                                                                                                                                                                                                                          |
 | **map_volume_100**           | (optional) Will remap the volume percentages that appear in the Home app so that the configured max_volume will appear as 100% in the Home app. For example, if the max_volume is 30, then setting the volume slider to 50% would set the receiver's actual volume to 15. Adjusting the stereo volume knob to 35 will appear as 100% in the Home app. This option could confuse some users to it defaults to off false, but it does give the user finer volume control especially when sliding volume up and down in the Home app. Defaults to False. |
 | **zone**                     | (optional) Defaults to main. Optionally control zone2 where supported.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **inputs**                   | (optional) List of inputs you want populated for the TV service and what you want them to be displayed as.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -93,12 +93,12 @@ Example accessory config (needs to be added to the homebridge config.json):
 
 # Troubleshooting
 
-For Troubleshooting look in the homebridge-onkyo/node_modules/eiscp/examples directory and see if you can run 3.js. "node 3.js". It should output all available commands.
+For Troubleshooting look in the homebridge-onkyo/node_modules/eiscp/examples directory and see if you can run 3.ts. "node 3.ts". It should output all available commands.
 
-You can find the output also in the [wiki](https://github.com/ToddGreenfield/homebridge-onkyo/wiki/EISCP-output-of-3.js).
+You can find the output also in the [wiki](https://github.com/jabrown93/homebridge-onkyo/wiki/EISCP-output-of-3.js).
 
 # EISCP Dependency
 
 This plugin depends on an EISCP library. As the needed package does not reside on NPM installation of this dependency caused various problems. As a workaround, the library was copied into this project in the eiscp folder. As the library was not updated for years it is unlikely that this project misses updates on the library.
 Please note that the EISCP library is not covered under the license of of homebridge-onkyo and comes with its own license in the EISCP folder.
-The original Github repository is [untitledlt / eiscp.js](https://github.com/untitledlt/eiscp.js).
+The original Github repository is [untitledlt / eiscp.ts](https://github.com/untitledlt/eiscp.js).

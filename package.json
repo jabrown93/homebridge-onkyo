@@ -9,8 +9,8 @@
     "typecheck": "tsc --noEmit",
     "prettier": "prettier --check .",
     "format": "prettier --write .",
-    "lint": "eslint . --ext .js --ext .ts --ignore-path node_modules",
-    "lint:fix": "eslint . --ext .js --ext .ts --ignore-path node_modules",
+    "lint": "eslint src/**.ts",
+    "lint:fix": "eslint src/**.ts --fix",
     "clean": "rimraf ./dist",
     "compile": "tsc",
     "build": "rimraf ./dist && npm-run-all clean compile",
@@ -32,7 +32,8 @@
   "dependencies": {
     "async": "*",
     "js-yaml": "*",
-    "polling-to-event": "^2.1.0"
+    "polling-to-event": "^2.1.0",
+    "utils": "^0.2.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
@@ -46,9 +47,11 @@
     "@semantic-release/github": "^11.0.1",
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/release-notes-generator": "^14.0.3",
+    "@types/async": "^3.2.24",
     "@types/async-lock": "^1.4.2",
     "@types/eslint__js": "^8.42.3",
-    "eslint": "9.18.0 ",
+    "@types/js-yaml": "^4.0.9",
+    "eslint": "9.19.0 ",
     "eslint-plugin-ava": "^15.0.1",
     "eslint-plugin-json": "^4.0.1",
     "eslint-plugin-unicorn": "latest",
@@ -77,6 +80,7 @@
   },
   "lint-staged": {
     "*.{js,mjs,ts,json,md}": [
+      "eslint src/**.ts --fix --max-warnings=0 --no-warn-ignored",
       "prettier --write"
     ]
   },

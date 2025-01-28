@@ -122,4 +122,5 @@ web_modules/
 # Webstorm
 .idea
 
+/test/hbConfig
 homebridge.log
