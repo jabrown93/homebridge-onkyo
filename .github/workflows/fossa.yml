@@ -1,4 +1,4 @@
-name: FOSSA scan
+name: FOSSA Scan
 
 on: [push, pull_request]
 
