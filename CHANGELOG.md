@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/jabrown93/homebridge-onkyo/compare/v1.0.1...v1.0.2) (2025-01-31)
+
+### Bug Fixes
+
+* revert platform name ([9d2026e](https://github.com/jabrown93/homebridge-onkyo/commit/9d2026e31fe3ce3abea92c68d1f95ff3f554f9fd))
+
 ## [1.0.1](https://github.com/jabrown93/homebridge-onkyo/compare/v1.0.0...v1.0.1) (2025-01-31)
 
 ### Bug Fixes
