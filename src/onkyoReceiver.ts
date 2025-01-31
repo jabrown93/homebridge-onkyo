@@ -1144,7 +1144,7 @@ export class OnkyoReceiver {
   addSources(service) {
     // If input name mappings are provided, use them.
     // Option to only receiverure specified inputs with filter_inputs
-    if (this.receiver.filter_inputs) {
+    if (this.receiver.filter_inputs && this.inputs) {
       // Check the RxInputs.Inputs items to see if each exists in this.inputs. Return new array of those that do.
       this.RxInputs.Inputs = this.RxInputs.Inputs.filter(rxinput => {
         return this.inputs.some(input => {
