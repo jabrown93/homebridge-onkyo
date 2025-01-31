@@ -2,8 +2,31 @@
   "name": "@jabrown93/homebridge-onkyo",
   "version": "0.0.0",
   "description": "Homebridge plugin for Onkyo Receivers",
-  "main": "dist/index.js",
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge",
+    "onkyo-avr",
+    "onkyo"
+  ],
+  "homepage": "https://github.com/jabrown93/homebridge-onkyo#readme",
+  "bugs": {
+    "url": "https://github.com/jabrown93/homebridge-onkyo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jabrown93/homebridge-onkyo.git"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Jared Brown",
+    "email": "npm@jaredbrown.io",
+    "url": "https://github.com/jabrown93"
+  },
+  "contributors": [
+    "gw-wiscon <gw.wiscon@gmail.com>"
+  ],
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
     "test": "xo",
     "typecheck": "tsc --noEmit",
@@ -22,76 +45,13 @@
     "tsc": "tsc --noEmit",
     "setup-config": "if [ ! -f ./test/hbConfig/config.json ]; then cp ./test/hbConfig/config-template.json ./test/hbConfig/config.json; fi"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jabrown93/homebridge-onkyo.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "async": "*",
-    "js-yaml": "*",
-    "polling-to-event": "^2.1.0",
-    "utils": "^0.2.2"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.6.0",
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.17.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/exec": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^11.0.1",
-    "@semantic-release/npm": "^12.0.1",
-    "@semantic-release/release-notes-generator": "^14.0.3",
-    "@types/async": "^3.2.24",
-    "@types/async-lock": "^1.4.2",
-    "@types/eslint__js": "^8.42.3",
-    "@types/js-yaml": "^4.0.9",
-    "eslint": "9.19.0 ",
-    "eslint-plugin-ava": "^15.0.1",
-    "eslint-plugin-json": "^4.0.1",
-    "eslint-plugin-unicorn": "latest",
-    "homebridge": "^2.0.0-beta.26",
-    "homebridge-config-ui-x": "^5.0.0-beta.35",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.3.0",
-    "nodemon": "^3.1.9",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^3.4.2",
-    "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2",
-    "typescript-eslint": "^8.19.1",
-    "xo": ">=0.47.0"
-  },
-  "keywords": [
-    "homebridge-plugin",
-    "homebridge",
-    "onkyo-avr",
-    "onkyo"
-  ],
-  "engines": {
-    "node": "^18.20.4 || ^20.18.0 || ^22.10.0",
-    "homebridge": "^1.8.0 || ^2.0.0-beta.0"
-  },
   "lint-staged": {
     "*.{js,mjs,ts,json,md}": [
       "eslint src/**.ts --fix --max-warnings=0 --no-warn-ignored",
       "prettier --write"
     ]
   },
-  "author": "gw-wiscon <gw.wiscon@gmail.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jabrown93/homebridge-onkyo/issues"
-  },
-  "homepage": "https://github.com/jabrown93/homebridge-onkyo#readme",
   "xo": {
-    "space": false,
     "ignores": "eiscp",
     "rules": {
       "unicorn/prefer-module": "warn",
@@ -127,6 +87,58 @@
           "classes": false
         }
       ]
-    }
+    },
+    "space": false
+  },
+  "dependencies": {
+    "async": "*",
+    "js-yaml": "*",
+    "polling-to-event": "^2.1.0",
+    "utils": "^0.2.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.17.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.3",
+    "@types/async": "^3.2.24",
+    "@types/async-lock": "^1.4.2",
+    "@types/eslint__js": "^8.42.3",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "cross-env": "^7.0.3",
+    "eslint": "9.19.0 ",
+    "eslint-plugin-ava": "^15.0.1",
+    "eslint-plugin-json": "^4.0.1",
+    "eslint-plugin-unicorn": "latest",
+    "homebridge": "^2.0.0-beta.27",
+    "homebridge-config-ui-x": "^5.0.0-beta.42",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
+    "nodemon": "^3.1.9",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.1",
+    "xo": ">=0.47.0"
+  },
+  "engines": {
+    "homebridge": "^1.8.0 || ^2.0.0-beta.0",
+    "node": "^18.20.4 || ^20.18.0 || ^22.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
