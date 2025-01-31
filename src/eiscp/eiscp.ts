@@ -4,10 +4,14 @@ import async from 'async';
 import util from 'util';
 
 import { EventEmitter } from 'events';
+// @ts-expect-error need to import json file
+import eiscp_commands from './eiscp-commands.json' with { type: 'json' };
+import { Logger } from 'homebridge';
 
 export class Eiscp extends EventEmitter {
   private is_connected: boolean;
   private eiscp?: net.Socket;
+  private readonly log: Logger | Console;
   private readonly send_queue?;
   private readonly COMMANDS;
   private readonly COMMAND_MAPPINGS;
@@ -25,10 +29,10 @@ export class Eiscp extends EventEmitter {
     model: undefined,
   };
 
-  constructor() {
+  constructor(logger: Logger | Console) {
     super();
+    this.log = logger;
     this.is_connected = false;
-    const eiscp_commands = JSON.parse('./eiscp-commands.json');
     this.COMMANDS = eiscp_commands.commands;
     this.COMMAND_MAPPINGS = eiscp_commands.command_mappings;
     this.VALUE_MAPPINGS = eiscp_commands.value_mappings;
@@ -629,7 +633,6 @@ export class Eiscp extends EventEmitter {
     async.each(
       Object.keys(this.COMMAND_MAPPINGS[zone]),
       (cmd, cb) => {
-        //console.log(cmd);
         result.push(cmd as unknown as never);
         cb();
       },
@@ -669,5 +672,3 @@ export class Eiscp extends EventEmitter {
     );
   }
 }
-
-export default new Eiscp();

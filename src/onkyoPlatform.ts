@@ -6,7 +6,7 @@ import {
   PlatformConfig,
 } from 'homebridge';
 
-import eiscp from './eiscp/eiscp.js';
+import { Eiscp } from './eiscp/eiscp.js';
 import { OnkyoReceiver } from './onkyoReceiver.js';
 
 export class OnkyoPlatform implements DynamicPlatformPlugin {
@@ -62,7 +62,7 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
           'Creating new connection for ip %s',
           receiver.ip_address
         );
-        this.connections[receiver.ip_address] = eiscp;
+        this.connections[receiver.ip_address] = new Eiscp(this.log);
         this.connections[receiver.ip_address].connect({
           host: receiver['ip_address'],
           reconnect: true,

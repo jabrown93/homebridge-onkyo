@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
-import eiscp from '../eiscp.js';
+import { Eiscp } from '../eiscp.js';
 // This will output a list of available commands
-
+const eiscp = new Eiscp(console);
 eiscp.get_commands('main', (err, cmds) => {
   console.log(cmds);
   cmds.forEach(cmd => {

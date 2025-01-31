@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import util from 'util';
 
-import eiscp from '../eiscp.js';
+import { Eiscp } from '../eiscp.js';
+const eiscp = new Eiscp(console);
 /*
    Connect to receiver and send a command
    Disconnect when response is received
