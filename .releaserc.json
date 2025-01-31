@@ -22,6 +22,12 @@
       }
     ],
     [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "test ${branch.type} != release || sed -i '/^## \\[/h;x;/^[^]]*-/{x;d};x' CHANGELOG.md"
+      }
+    ],
+    [
       "@semantic-release/release-notes-generator",
       {
         "parserOpts": {
@@ -42,12 +48,6 @@
       "@semantic-release/npm",
       {
         "tarballDir": "dist"
-      }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "test ${branch.type} != release || sed -i '/^## \\[/h;x;/^[^]]*-/{x;d};x' CHANGELOG.md"
       }
     ],
     ["@semantic-release/github"],

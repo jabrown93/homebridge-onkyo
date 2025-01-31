@@ -28,7 +28,6 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "test": "xo",
     "typecheck": "tsc --noEmit",
     "prettier": "prettier --check .",
     "format": "prettier --write .",
@@ -41,6 +40,7 @@
     "prepublishOnly": "npm-run-all prettier lint build",
     "semantic-release": "cross-env semantic-release --no-ci",
     "release": "npm-run-all build semantic-release",
+    "test": "xo",
     "prepare": "husky",
     "tsc": "tsc --noEmit",
     "setup-config": "if [ ! -f ./test/hbConfig/config.json ]; then cp ./test/hbConfig/config-template.json ./test/hbConfig/config.json; fi"
