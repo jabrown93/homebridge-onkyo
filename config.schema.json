@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "Onkyo",
+  "pluginAlias": "OnkyoReceiverPlatform",
   "pluginType": "platform",
   "singular": true,
   "headerDisplay": "Onkyo-like receiver as a HomeKit TV.",
@@ -11,7 +11,7 @@
       "receivers": {
         "type": "array",
         "title": "Receivers",
-        "descrpition": "List of receivers and/or receiver Zones to add to HomeKit.",
+        "description": "List of receivers and/or receiver Zones to add to HomeKit.",
         "items": {
           "type": "object",
           "title": "Receiver or Receiver Zone",
