@@ -8,7 +8,7 @@
   },
   "accessories": [],
   "plugins": [
-    "homebridge-onkyo",
+    "@jabrown93/homebridge-onkyo",
     "homebridge-config-ui-x"
   ],
   "platforms": [

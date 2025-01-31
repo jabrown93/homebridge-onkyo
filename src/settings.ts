@@ -6,4 +6,4 @@ export const PLATFORM_NAME = 'OnkyoReceiverPlatform';
 /**
  * This must match the name of your plugin as defined the package.json `name` property
  */
-export const PLUGIN_NAME = 'homebridge-onkyo';
+export const PLUGIN_NAME = '@jabrown93/homebridge-onkyo';

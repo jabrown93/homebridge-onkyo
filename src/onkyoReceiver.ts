@@ -11,6 +11,7 @@ import { ReceiverInputConfig } from './receiverInputConfig';
 import pollingtoevent from 'polling-to-event';
 // @ts-expect-error need to import json
 import eiscpDataAll from './eiscp/eiscp-commands.json' with { type: 'json' };
+import { PLUGIN_NAME } from './settings';
 
 interface CommandInputs {
   power?: string;
@@ -226,9 +227,7 @@ export class OnkyoReceiver {
       this.createVolumeType(this.tvService);
     }
 
-    this.platform.api.publishExternalAccessories('homebridge-onkyo', [
-      this.accessory,
-    ]);
+    this.platform.api.publishExternalAccessories(PLUGIN_NAME, [this.accessory]);
   }
 
   private createRxInput() {
