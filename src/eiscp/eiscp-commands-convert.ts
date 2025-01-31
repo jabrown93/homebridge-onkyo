@@ -67,31 +67,29 @@ export default function convertYamlToJson() {
                 models: doc[zone][command].values[value].models,
               };
             }
-          } else {
             // Special values don't have names so we can handle them here
-            if (value.indexOf(',') !== -1) {
-              // It's a range
-              if (
-                typeof value_mappings[zone][command].INTRANGES === 'undefined'
-              ) {
-                value_mappings[zone][command].INTRANGES = [];
-              }
-              value_mappings[zone][command].INTRANGES.push({
-                range: value,
-                models: doc[zone][command].values[value].models,
-              });
-            } else {
-              // It's not yet supported
-              console.log(
-                'Not yet supported: (command: ' +
-                  command +
-                  ') (value: ' +
-                  value +
-                  ') ( ' +
-                  doc[zone][command].values[value].description +
-                  ' )'
-              );
+          } else if (value.indexOf(',') !== -1) {
+            // It's a range
+            if (
+              typeof value_mappings[zone][command].INTRANGES === 'undefined'
+            ) {
+              value_mappings[zone][command].INTRANGES = [];
             }
+            value_mappings[zone][command].INTRANGES.push({
+              range: value,
+              models: doc[zone][command].values[value].models,
+            });
+          } else {
+            // It's not yet supported
+            console.log(
+              'Not yet supported: (command: ' +
+                command +
+                ') (value: ' +
+                value +
+                ') ( ' +
+                doc[zone][command].values[value].description +
+                ' )'
+            );
           }
         }
       }

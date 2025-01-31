@@ -444,7 +444,7 @@ export class Eiscp extends EventEmitter {
         options.verify_commands - Whether the reject commands not found for the current model
       */
 
-    options = options || {};
+    options = options ?? {};
     this.config.host = options['host'] ?? this.config.host;
     this.config.port = options['port'] ?? this.config.port;
     this.config.model = options['model'] ?? this.config.model;

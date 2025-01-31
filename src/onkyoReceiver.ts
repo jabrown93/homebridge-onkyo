@@ -316,12 +316,6 @@ export class OnkyoReceiver {
       this.platform.api.hap.Characteristic.Active,
       this.state
     );
-
-    // if (this.volume_dimmer) {
-    // 	this.m_state = !(response == 'on');
-    // 	this.dimmer.getCharacteristic(this.platform.api.hap.Characteristic.On)
-    // 	.updateValue((response == 'on'), null, 'power event m_status');
-    // }
   }
 
   private eventAudioMuting(response: string) {
@@ -436,17 +430,12 @@ export class OnkyoReceiver {
           this.cmdMap[this.receiver.zone].power +
           '=standby',
         error => {
-          // this.platform.log.debug( 'PWR OFF: %s - %s -- current state: %s', error, response, this.state);
           if (error) {
             this.state = false;
             this.platform.log.error(
               'setPowerState - PWR OFF: ERROR - current state: %s',
               this.state
             );
-            // if (this.tvService ) {
-            // 	this.tvService.getCharacteristic(this.platform.api.hap.Characteristic.Active)
-            // 	.updateValue(this.state, null, 'statuspoll');
-            // }
           }
         }
       );
@@ -463,7 +452,6 @@ export class OnkyoReceiver {
     this.eiscp.command(
       this.receiver.zone + '.' + this.cmdMap[this.receiver.zone].power + '=on',
       error => {
-        // this.platform.log.debug( 'PWR ON: %s - %s -- current state: %s', error, response, this.state);
         if (error) {
           this.state = false;
           this.platform.log.error(
@@ -547,10 +535,6 @@ export class OnkyoReceiver {
       }
     );
 
-    // if (this.volume_dimmer) {
-    // 	this.m_state = !(powerOn == 'on');
-    // 	this.dimmer.getCharacteristic(this.platform.api.hap.Characteristic.On).updateValue((powerOn == 'on'), null, 'power event m_status');
-    // }
     this.tvService?.updateCharacteristic(
       this.platform.api.hap.Characteristic.Active,
       this.state
@@ -606,9 +590,6 @@ export class OnkyoReceiver {
           'event - PWR status poller - new state: ',
           this.state
         );
-        // if (this.tvService ) {
-        // 	this.tvService.getCharacteristic(Characteristic.Active).updateValue(this.state, null, 'statuspoll');
-        // }
       });
       // Audio-Input Polling
       const i_statusemitter = pollingtoevent(
@@ -630,9 +611,6 @@ export class OnkyoReceiver {
           'event - INPUT status poller - new i_state: ',
           this.i_state
         );
-        // if (this.tvService ) {
-        // 	this.tvService.getCharacteristic(Characteristic.ActiveIdentifier).updateValue(this.i_state, null, 'i_statuspoll');
-        // }
       });
       // Audio-Muting Polling
       const m_statusemitter = pollingtoevent(
@@ -654,9 +632,6 @@ export class OnkyoReceiver {
           'event - MUTE status poller - new m_state: ',
           this.m_state
         );
-        // if (this.tvService ) {
-        // 	this.tvService.getCharacteristic(Characteristic.Mute).updateValue(this.m_state, null, 'm_statuspoll');
-        // }
       });
       // Volume Polling
       const v_statusemitter = pollingtoevent(
@@ -678,9 +653,6 @@ export class OnkyoReceiver {
           'event - VOLUME status poller - new v_state: ',
           this.v_state
         );
-        // if (this.tvService ) {
-        // 	this.tvService.getCharacteristic(Characteristic.Volume).updateValue(this.v_state, null, 'v_statuspoll');
-        // }
       });
     }
   }
@@ -796,7 +768,9 @@ export class OnkyoReceiver {
 
     // Are we mapping volume to 100%?
     if (this.receiver.map_volume_100) {
-      const volumeMultiplier = this.receiver.max_volume ?? 100 / 100;
+      const volumeMultiplier = this.receiver.max_volume
+        ? this.receiver.max_volume / 100
+        : 100;
       const newVolume = volumeMultiplier * volumeLvl;
       this.v_state = Math.round(newVolume);
       this.platform.log.debug(
@@ -1148,7 +1122,7 @@ export class OnkyoReceiver {
       this.platform.log.debug('remoteKeyPress - INPUT: pressing key %s', press);
       this.eiscp.command(this.receiver.zone + '.setup=' + press, error => {
         if (error) {
-          // this.i_state = 1;
+          this.i_state = 1;
           this.platform.log.error(
             'remoteKeyPress - INPUT: ERROR pressing button %s',
             press
