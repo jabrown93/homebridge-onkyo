@@ -1,11 +1,11 @@
 /* eslint arrow-body-style: ["off", "never"] */
 
-import info from '../package.json';
+import info from '../package.json' with { type: 'json' };
 
 import pollingtoevent from 'polling-to-event';
 
 // Create the RxInput object for later use.
-import eiscpDataAll from './eiscp/eiscp-commands.json';
+import eiscpDataAll from './eiscp/eiscp-commands.json' with { type: 'json' };
 
 import eiscp0 from './eiscp/eiscp.js';
 
@@ -206,9 +206,10 @@ class OnkyoAccessory {
       this.createVolumeType(this.tvService);
     }
 
-    this.platform.api.publishExternalAccessories('homebridge-onkyo', [
-      this.accessory,
-    ]);
+    this.platform.api.publishExternalAccessories(
+      '@jabrown93/homebridge-onkyo',
+      [this.accessory]
+    );
   }
 
   createRxInput() {
@@ -1123,10 +1124,10 @@ class OnkyoAccessory {
       inputCode
     );
     const inputSourceType = Characteristic.InputSourceType.HDMI;
-
+    const normalizedName = name.toLowerCase().replace(/-/g, ' ');
     input
       .setCharacteristic(Characteristic.Identifier, hapId)
-      .setCharacteristic(Characteristic.ConfiguredName, name)
+      .setCharacteristic(Characteristic.ConfiguredName, normalizedName)
       .setCharacteristic(
         Characteristic.IsConfigured,
         Characteristic.IsConfigured.CONFIGURED
@@ -1278,7 +1279,7 @@ export default homebridge => {
   ({ Service, Characteristic, Perms } = homebridge.hap);
   homebridge.registerPlatform(
     '@jabrown93/homebridge-onkyo',
-    'Onkyo',
+    'OnkyoReceiverPlatform',
     OnkyoPlatform
   );
 };

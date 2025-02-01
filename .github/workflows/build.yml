@@ -25,8 +25,8 @@ jobs:
       - name: Lint the project
         run: npm run lint
 
-      - name: Build the project
-        run: npm run build
+#      - name: Build the project
+#        run: npm run build
 
       - name: List, audit, fix outdated dependencies and build again
         run: |
@@ -34,4 +34,4 @@ jobs:
           npm audit || true  # ignore failures
           npm audit fix || true
           npm list --outdated
-          npm run build
+#          npm run build

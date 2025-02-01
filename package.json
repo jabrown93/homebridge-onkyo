@@ -26,23 +26,18 @@
     "gw-wiscon <gw.wiscon@gmail.com>"
   ],
   "type": "module",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "typecheck": "tsc --noEmit",
     "prettier": "prettier --check .",
     "format": "prettier --write .",
     "lint": "eslint src/**.js",
     "lint:fix": "eslint src/**.js --fix",
-    "clean": "rimraf ./dist",
-    "compile": "tsc",
-    "build": "rimraf ./dist && npm-run-all clean compile",
-    "watch": "npm run setup-config && npm run build && npm link && nodemon",
+    "watch": "npm run setup-config && npm link && nodemon",
     "prepublishOnly": "npm-run-all prettier lint build",
     "semantic-release": "cross-env semantic-release --no-ci",
-    "release": "npm-run-all build semantic-release",
+    "release": "npm-run-all semantic-release",
     "test": "xo",
     "prepare": "husky",
-    "tsc": "tsc --noEmit",
     "setup-config": "if [ ! -f ./test/hbConfig/config.json ]; then cp ./test/hbConfig/config-template.json ./test/hbConfig/config.json; fi"
   },
   "lint-staged": {

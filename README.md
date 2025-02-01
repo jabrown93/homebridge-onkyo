@@ -13,7 +13,7 @@ Should work for all supported models as listed in the eiscp/eiscp-commands.json 
 # Description
 
 This is an enhanced fork from the original/unmaintained homebridge-onkyo-avr plugin written by gw-wiscon.
-Existing users of my original fork or gw-wiscon's be sure to update the "platform" config to "Onkyo".
+Existing users of my original fork or gw-wiscon's be sure to update the "platform" config to "OnkyoReceiverPlatform".
 
 # Changelog
 
@@ -41,7 +41,7 @@ Example accessory config (needs to be added to the homebridge config.json):
 
 ```
 "platforms": [{
-       "platform": "Onkyo",
+       "platform": "OnkyoReceiverPlatform",
        "receivers": [
            {
                "model": "TX-NR609",
@@ -74,7 +74,7 @@ Example accessory config (needs to be added to the homebridge config.json):
 
 | Field                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **platform**                 | (required) Must always be "Onkyo".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **platform**                 | (required) Must always be "OnkyoReceiverPlatform".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **receivers**                | (required) List of receiver accessories to create. Must contain at least 1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ReceiverConfig Attributes    |
 | ---------------------------- | ------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |

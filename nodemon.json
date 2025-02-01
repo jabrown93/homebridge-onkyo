@@ -1,8 +1,8 @@
 {
   "watch": ["src", "test/hbConfig/config.json"],
-  "ext": "ts",
+  "ext": "js",
   "ignore": [],
-  "exec": "tsc && homebridge -U ./test/hbConfig -I -D",
+  "exec": "homebridge -U ./test/hbConfig -I -D",
   "signal": "SIGTERM",
   "env": {
     "NODE_OPTIONS": "--trace-warnings"

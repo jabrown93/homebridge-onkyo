@@ -9,7 +9,7 @@ import async from 'async';
 
 import events from 'events';
 
-import eiscp_commands from './eiscp-commands.json';
+import eiscp_commands from './eiscp-commands.json' with { type: 'json' };
 
 const self = new events.EventEmitter();
 let eiscp;
