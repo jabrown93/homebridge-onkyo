@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
+/*jslint node:true nomen:true*/
+'use strict';
 import util from 'util';
 
-import { Eiscp } from '../eiscp.js';
-const eiscp = new Eiscp(console);
+import eiscp from '../eiscp';
 /*
    Connect to receiver and send a command
    Disconnect when response is received
@@ -20,13 +20,14 @@ eiscp.on('error', util.log);
 
 /*
   Here we listen to volume changes (but we close the connection after the first volume change)
-  You can listen to any supported command, see example 3.ts, or you can listen to the data event to catch everything the receiver sends
+  You can listen to any supported command, see example 3.js, or you can listen to the data event to catch everything the receiver sends
 
   Please note that there is no way to identify who or what caused the volume to change
   You could just as well remove the eiscp.command (further down) and change the volume with the volume knob on the receiver
 */
 eiscp.on('volume', arg => {
   // Print received volume
+  // eslint-disable-next-line no-undef,no-console
   console.log(util.format('\nVolume changed to: %s\n', arg));
 
   eiscp.close();

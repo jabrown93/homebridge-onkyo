@@ -1,8 +1,9 @@
-/* eslint-disable no-console */
-import util from 'utils';
+/* eslint-disable no-console,no-undef */
+/*jslint node:true nomen:true*/
+'use strict';
+import util from 'util';
 
-import { Eiscp } from '../eiscp.js';
-const eiscp = new Eiscp(console);
+import eiscp from '../eiscp';
 
 eiscp.on('debug', util.log);
 eiscp.on('error', util.log);
