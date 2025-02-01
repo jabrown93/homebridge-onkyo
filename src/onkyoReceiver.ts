@@ -324,7 +324,7 @@ export class OnkyoReceiver {
       response,
       this.m_state
     );
-    this.tvService?.updateCharacteristic(
+    this.tvSpeakerService?.updateCharacteristic(
       this.platform.api.hap.Characteristic.Mute,
       this.m_state
     );
@@ -386,7 +386,7 @@ export class OnkyoReceiver {
       );
     }
 
-    this.tvService?.updateCharacteristic(
+    this.tvSpeakerService?.updateCharacteristic(
       this.platform.api.hap.Characteristic.Volume,
       this.v_state
     );
@@ -1166,8 +1166,7 @@ export class OnkyoReceiver {
         });
       }
 
-      const input = this.setupInput(i.code, inputName, hapId, service);
-      return input;
+      return this.setupInput(i.code, inputName, hapId, service);
     });
     return inputs;
   }
@@ -1325,6 +1324,10 @@ export class OnkyoReceiver {
   }
 
   createTvSpeakerService() {
+    this.platform.log.debug(
+      'Creating TV Speaker service for receiver `%s`',
+      this.receiver.name
+    );
     const tvSpeakerService =
       this.accessory.getService(
         this.platform.api.hap.Service.TelevisionSpeaker
