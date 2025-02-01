@@ -215,9 +215,10 @@ export class OnkyoReceiver {
     this.tvService = this.createTvService();
     this.tvSpeakerService = this.createTvSpeakerService();
     this.addSources(this.tvService);
-    if (this.receiver.volume_type) {
+    if (this.receiver.volume_type && this.receiver.volume_type !== 'none') {
       this.platform.log.debug(
-        'Creating Dimmer service linked to TV for receiver %s',
+        'Creating %s service linked to TV for receiver %s',
+        this.receiver.volume_type,
         this.receiver.name
       );
       this.createVolumeType(this.tvService);
@@ -231,6 +232,7 @@ export class OnkyoReceiver {
     for (const set in eiscpDataAll.modelsets) {
       eiscpDataAll.modelsets[set].forEach(model => {
         if (model.includes(this.receiver.model)) {
+          this.platform.log.debug('Found modelset: %s', set);
           inSets.push(set as unknown as never);
         }
       });
@@ -239,7 +241,9 @@ export class OnkyoReceiver {
     // Get list of commands from eiscpData
     const eiscpData = eiscpDataAll.commands.main.SLI.values;
     // Create a JSON object for inputs from the eiscpData
-    let newobj = '{ "Inputs" : [';
+    const inputs = {
+      Inputs: [],
+    };
     for (const exkey in eiscpData) {
       let hold = eiscpData[exkey].name.toString();
       if (hold.includes(',')) {
@@ -270,14 +274,14 @@ export class OnkyoReceiver {
       const set = eiscpData[newExkey].models;
 
       if (inSets.includes(set as unknown as never)) {
-        newobj =
-          newobj + '{ "code":"' + exkey + '" , "label":"' + hold + '" },';
+        const input = {
+          code: newExkey,
+          label: hold,
+        };
+        inputs.Inputs.push(input as never);
       }
     }
-
-    // Drop last comma first
-    newobj = newobj.slice(0, -1) + ']}';
-    this.RxInputs = JSON.parse(newobj);
+    this.RxInputs = inputs;
   }
 
   /// ////////////////
@@ -1140,6 +1144,7 @@ export class OnkyoReceiver {
   addSources(service) {
     // If input name mappings are provided, use them.
     // Option to only receiverure specified inputs with filter_inputs
+    this.platform.log.debug('Supported inputs', this.RxInputs.Inputs);
     if (this.receiver.filter_inputs && this.inputs) {
       // Check the RxInputs.Inputs items to see if each exists in this.inputs. Return new array of those that do.
       this.RxInputs.Inputs = this.RxInputs.Inputs.filter(rxinput => {
