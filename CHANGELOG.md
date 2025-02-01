@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.8](https://github.com/jabrown93/homebridge-onkyo/compare/v1.0.7...v1.0.8) (2025-02-01)
+
+### Bug Fixes
+
+* support strm-box in config ([d3f1107](https://github.com/jabrown93/homebridge-onkyo/commit/d3f11079e5ea7c3159795e342c6cdc2cfe8a1dac))
+
 ## [1.0.7](https://github.com/jabrown93/homebridge-onkyo/compare/v1.0.6...v1.0.7) (2025-02-01)
 
 ### Bug Fixes
