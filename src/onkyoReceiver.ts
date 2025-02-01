@@ -1,12 +1,7 @@
 import { OnkyoPlatform } from './onkyoPlatform.js';
 import { ReceiverConfig } from './receiverConfig.js';
 import { Eiscp } from './eiscp/eiscp.js';
-import {
-  Characteristic,
-  CharacteristicValue,
-  PlatformAccessory,
-  Service,
-} from 'homebridge';
+import { CharacteristicValue, PlatformAccessory, Service } from 'homebridge';
 import { ReceiverInputConfig } from './receiverInputConfig.js';
 import pollingtoevent from 'polling-to-event';
 // @ts-expect-error need to import json
@@ -26,12 +21,12 @@ interface CommandZones {
 }
 
 export class OnkyoReceiver {
-  private readonly platform;
+  private readonly platform: OnkyoPlatform;
   private readonly eiscp: Eiscp;
   private setAttempt: number;
   private readonly receiver: ReceiverConfig;
   private readonly cmdMap: CommandZones;
-  private readonly buttons: Map<Characteristic, string>;
+  private readonly buttons: Map<number, string>;
   private state: boolean;
   private m_state: boolean;
   private v_state: number;
@@ -48,7 +43,7 @@ export class OnkyoReceiver {
   private reachable: boolean;
   private dimmer?: Service;
   private speed?: Service;
-  private readonly inputs: ReceiverInputConfig[];
+  private readonly inputs?: ReceiverInputConfig[];
 
   constructor(
     platform: OnkyoPlatform,
@@ -59,6 +54,7 @@ export class OnkyoReceiver {
     this.receiver = receiver;
     this.accessory = accessory;
     this.reachable = true;
+    this.inputs = this.receiver.inputs;
 
     this.platform.log.info(
       '**************************************************************'
@@ -80,6 +76,7 @@ export class OnkyoReceiver {
     this.platform.log.debug('Model %s', this.receiver.model);
     this.receiver.zone = (this.receiver.zone ?? 'main').toLowerCase();
     this.platform.log.debug('Zone %s', this.receiver.zone);
+    this.platform.log.debug('Input Mappings %s', this.inputs);
 
     if (this.receiver.volume_type === undefined) {
       this.platform.log.warn(
@@ -186,7 +183,6 @@ export class OnkyoReceiver {
     if (this.interval > 10 && this.interval < 100_000) {
       this.switchHandling = 'poll';
     }
-    this.inputs = this.platform.config.inputs;
 
     this.eiscp.on('debug', this.eventDebug.bind(this));
     this.eiscp.on('error', this.eventError.bind(this));
@@ -458,7 +454,7 @@ export class OnkyoReceiver {
             this.state
           );
           this.tvService?.updateCharacteristic(
-            this.platform.api.hap.Characteristic.Active.powerOn,
+            this.platform.api.hap.Characteristic.Active,
             'statuspoll'
           );
           return;
@@ -1147,7 +1143,7 @@ export class OnkyoReceiver {
     if (this.receiver.filter_inputs && this.inputs) {
       // Check the RxInputs.Inputs items to see if each exists in this.inputs. Return new array of those that do.
       this.RxInputs.Inputs = this.RxInputs.Inputs.filter(rxinput => {
-        return this.inputs.some(input => {
+        return this.inputs?.some(input => {
           return input.input_name === rxinput.label;
         });
       });
@@ -1155,12 +1151,17 @@ export class OnkyoReceiver {
 
     this.platform.log.debug(this.RxInputs.Inputs);
     // Create final array of inputs, using any labels defined in the receiver's inputs to override the default labels
-    const inputs = this.RxInputs.Inputs.map((i, index) => {
+    return this.RxInputs.Inputs.map((i, index: number) => {
       const hapId = index + 1;
       let inputName = i.label;
       if (this.inputs) {
         this.inputs.forEach(input => {
           if (input.input_name === i.label) {
+            this.platform.log.debug(
+              'Found input mapping for %s to %s ',
+              i.label,
+              input.display_name
+            );
             inputName = input.display_name;
           }
         });
@@ -1168,13 +1169,13 @@ export class OnkyoReceiver {
 
       return this.setupInput(i.code, inputName, hapId, service);
     });
-    return inputs;
   }
 
-  setupInput(inputCode, name, hapId, television) {
+  setupInput(inputCode, name: string, hapId: number, television: Service) {
+    const normalizedName = name.replace('-', ' ');
     const input = this.accessory.addService(
       this.platform.api.hap.Service.InputSource,
-      `${this.receiver.name} ${name}`,
+      `${this.receiver.name} ${normalizedName}`,
       inputCode
     );
     const inputSourceType =
@@ -1184,7 +1185,7 @@ export class OnkyoReceiver {
       .setCharacteristic(this.platform.api.hap.Characteristic.Identifier, hapId)
       .setCharacteristic(
         this.platform.api.hap.Characteristic.ConfiguredName,
-        name.replace('-', ' ')
+        normalizedName
       )
       .setCharacteristic(
         this.platform.api.hap.Characteristic.IsConfigured,
@@ -1198,7 +1199,7 @@ export class OnkyoReceiver {
     input
       .getCharacteristic(this.platform.api.hap.Characteristic.ConfiguredName)
       .setProps({
-        perms: [this.platform.api.hap.Perms.READ],
+        perms: [this.platform.api.hap.Perms.PAIRED_READ],
       });
 
     television.addLinkedService(input);
@@ -1297,7 +1298,7 @@ export class OnkyoReceiver {
       .getCharacteristic(this.platform.api.hap.Characteristic.ConfiguredName)
       .setValue(this.receiver.name)
       .setProps({
-        perms: [this.platform.api.hap.Perms.READ],
+        perms: [this.platform.api.hap.Perms.PAIRED_READ],
       });
 
     tvService.setCharacteristic(
