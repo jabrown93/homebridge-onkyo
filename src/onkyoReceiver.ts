@@ -566,8 +566,6 @@ export class OnkyoReceiver {
   private polling() {
     // Status Polling
     if (this.switchHandling === 'poll') {
-      // somebody instroduced powerurl but we are never using it.
-      // const powerurl = this.status_url;
       this.platform.log.debug('start long poller..');
       // PWR Polling
       const statusemitter = pollingtoevent(
@@ -746,21 +744,19 @@ export class OnkyoReceiver {
     return this.v_state;
   }
 
-  private setVolumeState(volumeLvl, callback, context) {
+  private setVolumeState(volumeLvl, context) {
     // if context is v_statuspoll, then we need to ensure this we do not set the actual value
     if (context && context === 'v_statuspoll') {
       this.platform.log.debug(
         'setVolumeState - polling mode, ignore, v_state: %s',
         this.v_state
       );
-      callback(null, this.v_state);
       return;
     }
 
     if (!this.receiver.ip_address) {
       this.platform.log.error('Ignoring request; No ip_address defined.');
-      callback(new Error('No ip_address defined.'));
-      return;
+      throw new Error('No ip_address defined.');
     }
 
     this.setAttempt++;
@@ -793,10 +789,6 @@ export class OnkyoReceiver {
       );
     }
 
-    // do the callback immediately, to free homekit
-    // have the event later on execute changes
-    callback(null, this.v_state);
-
     this.eiscp.command(
       this.receiver.zone +
         '.' +
@@ -820,28 +812,23 @@ export class OnkyoReceiver {
     );
   }
 
-  setVolumeRelative(volumeDirection, callback, context) {
+  setVolumeRelative(volumeDirection, context) {
     // if context is v_statuspoll, then we need to ensure this we do not set the actual value
     if (context && context === 'v_statuspoll') {
       this.platform.log.debug(
         'setVolumeRelative - polling mode, ignore, v_state: %s',
         this.v_state
       );
-      callback(null, this.v_state);
       return;
     }
 
     if (!this.receiver.ip_address) {
       this.platform.log.error('Ignoring request; No ip_address defined.');
-      callback(new Error('No ip_address defined.'));
-      return;
+      throw new Error('No ip_address defined.');
     }
 
     this.setAttempt++;
 
-    // do the callback immediately, to free homekit
-    // have the event later on execute changes
-    callback(null, this.v_state);
     if (
       volumeDirection ===
       this.platform.api.hap.Characteristic.VolumeSelector.INCREMENT
@@ -957,8 +944,6 @@ export class OnkyoReceiver {
 
     this.setAttempt++;
 
-    // do the callback immediately, to free homekit
-    // have the event later on execute changes
     this.m_state = muteOn as boolean;
     if (this.m_state) {
       this.platform.log.debug(
@@ -1027,9 +1012,6 @@ export class OnkyoReceiver {
       throw new Error('No ip_address defined.');
     }
 
-    // do the callback immediately, to free homekit
-    // have the event later on execute changes
-
     this.platform.log.debug(
       'getInputState - actual mode, return i_state: ',
       this.i_state
@@ -1058,21 +1040,19 @@ export class OnkyoReceiver {
     return this.i_state;
   }
 
-  setInputSource(source, callback, context) {
+  setInputSource(source, context) {
     // if context is i_statuspoll, then we need to ensure this we do not set the actual value
     if (context && context === 'i_statuspoll') {
       this.platform.log.info(
         'setInputState - polling mode, ignore, i_state: %s',
         this.i_state
       );
-      callback(null, this.i_state);
       return;
     }
 
     if (!this.receiver.ip_address) {
       this.platform.log.error('Ignoring request; No ip_address defined.');
-      callback(new Error('No ip_address defined.'));
-      return;
+      throw new Error('No ip_address defined.');
     }
 
     this.setAttempt++;
@@ -1086,9 +1066,6 @@ export class OnkyoReceiver {
       label
     );
 
-    // do the callback immediately, to free homekit
-    // have the event later on execute changes
-    callback(null, this.i_state);
     this.eiscp.command(
       this.receiver.zone +
         '.' +
@@ -1112,10 +1089,7 @@ export class OnkyoReceiver {
     );
   }
 
-  remoteKeyPress(button, callback) {
-    // do the callback immediately, to free homekit
-    // have the event later on execute changes
-    callback(null, button);
+  remoteKeyPress(button) {
     if (this.buttons.get(button)) {
       const press = this.buttons.get(button);
       this.platform.log.debug('remoteKeyPress - INPUT: pressing key %s', press);
