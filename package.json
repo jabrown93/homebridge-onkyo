@@ -46,7 +46,7 @@
     "setup-config": "if [ ! -f ./test/hbConfig/config.json ]; then cp ./test/hbConfig/config-template.json ./test/hbConfig/config.json; fi"
   },
   "lint-staged": {
-    "*.{js,mjs,ts,json,md}": [
+    "*.{js,mjs,ts,json,md,yml,json}": [
       "eslint src/**.ts --fix --max-warnings=0 --no-warn-ignored",
       "prettier --write"
     ]
