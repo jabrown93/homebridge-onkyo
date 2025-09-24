@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.1.0...v1.2.0) (2025-09-24)
+
+### Features
+
+* **deps:** update dependency homebridge-config-ui-x to v5.7.0 ([#34](https://github.com/jabrown93/homebridge-onkyo/issues/34)) ([58507c6](https://github.com/jabrown93/homebridge-onkyo/commit/58507c6d53ccf5b24ea1db36dac0cc3058dc7d77))
+
 ## [1.1.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.0.9...v1.1.0) (2025-09-22)
 
 ### Features
