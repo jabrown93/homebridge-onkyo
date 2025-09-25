@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.2.0...v1.3.0) (2025-09-25)
+
+### Features
+
+* **deps:** update dependency lint-staged to v16.2.0 ([#35](https://github.com/jabrown93/homebridge-onkyo/issues/35)) ([f5080ff](https://github.com/jabrown93/homebridge-onkyo/commit/f5080ffbea0971e3a465f250c1dd156c81ca0ac0))
+
 ## [1.2.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.1.0...v1.2.0) (2025-09-24)
 
 ### Features
