@@ -7,6 +7,9 @@
 ![Node.js CI](https://github.com/jabrown93/homebridge-onkyo/workflows/Node.js%20CI/badge.svg?branch=master)
 ![CodeQL](https://github.com/jabrown93/homebridge-onkyo/workflows/CodeQL/badge.svg)
 
+## WARNING: This plugin is not actively maintained except for automated dependnecy updates. Issues/bugs are unlikely to be addressed. Use at your own risk
+
+
 Homebridge plugin for Onkyo Receivers
 Should work for all supported models as listed in the eiscp/eiscp-commands.json file. If your model is not listed, try TX-NR609.
 
