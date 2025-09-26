@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/jabrown93/homebridge-onkyo/compare/v1.3.0...v1.3.1) (2025-09-26)
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies to v8.44.1 ([#37](https://github.com/jabrown93/homebridge-onkyo/issues/37)) ([3cc2ec7](https://github.com/jabrown93/homebridge-onkyo/commit/3cc2ec785cacec932cee674f5279e9c6881585e9))
+
 ## [1.3.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.2.0...v1.3.0) (2025-09-25)
 
 ### Features
