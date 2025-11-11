@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import util from 'util';
+import util from 'node:util';
 
 import { Eiscp } from '../eiscp.js';
 const eiscp = new Eiscp(console);
@@ -14,9 +14,9 @@ eiscp.connect();
 //eiscp.connect({host: "10.0.0.5"});
 
 // Prints debugging info to the terminal
-eiscp.on('debug', util.log);
+eiscp.on('debug', console.log);
 // Prints errors to the terminal
-eiscp.on('error', util.log);
+eiscp.on('error', console.log);
 
 /*
   Here we listen to volume changes (but we close the connection after the first volume change)
