@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.4](https://github.com/jabrown93/homebridge-onkyo/compare/v1.3.3...v1.3.4) (2025-11-19)
+
+### Bug Fixes
+
+* **deps:** update dependency js-yaml to v4.1.1 [security] ([#96](https://github.com/jabrown93/homebridge-onkyo/issues/96)) ([89ccca6](https://github.com/jabrown93/homebridge-onkyo/commit/89ccca6ae8f6242dea565dbbcf032205ed466470))
+
 ## [1.3.3](https://github.com/jabrown93/homebridge-onkyo/compare/v1.3.2...v1.3.3) (2025-11-14)
 
 ### Bug Fixes
