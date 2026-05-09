@@ -4,7 +4,6 @@ import async from 'async';
 import util from 'util';
 
 import { EventEmitter } from 'events';
-// @ts-expect-error need to import json file
 import eiscp_commands from './eiscp-commands.json' with { type: 'json' };
 import { Logger } from 'homebridge';
 
