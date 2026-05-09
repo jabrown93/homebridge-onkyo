@@ -4,7 +4,6 @@ import { Eiscp } from './eiscp/eiscp.js';
 import { CharacteristicValue, PlatformAccessory, Service } from 'homebridge';
 import { ReceiverInputConfig } from './receiverInputConfig.js';
 import pollingtoevent from 'polling-to-event';
-// @ts-expect-error need to import json
 import eiscpDataAll from './eiscp/eiscp-commands.json' with { type: 'json' };
 import { PLUGIN_NAME } from './settings.js';
 
