@@ -541,7 +541,7 @@ export class Eiscp extends EventEmitter {
         this.emit('close', this.config.host, this.config.port);
 
         if (this.config.reconnect) {
-          setTimeout(this.connect, this.config.reconnect_sleep * 1000);
+          setTimeout(() => this.connect(), this.config.reconnect_sleep * 1000);
         }
       })
       .on('error', err => {
