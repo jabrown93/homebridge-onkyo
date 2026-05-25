@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.6](https://github.com/jabrown93/homebridge-onkyo/compare/v1.3.5...v1.3.6) (2026-05-25)
+
+### Bug Fixes
+
+* preserve reconnect context ([#183](https://github.com/jabrown93/homebridge-onkyo/issues/183)) ([f7de135](https://github.com/jabrown93/homebridge-onkyo/commit/f7de135e9177e0944b249f890eb92fa7c65212d9))
+
 ## [1.3.5](https://github.com/jabrown93/homebridge-onkyo/compare/v1.3.4...v1.3.5) (2025-11-24)
 
 ### Bug Fixes
