@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.4.0...v1.5.0) (2026-06-14)
+
+### Features
+
+* **engines:** support Node 22 LTS alongside Node 24 ([#193](https://github.com/jabrown93/homebridge-onkyo/issues/193)) ([63d6707](https://github.com/jabrown93/homebridge-onkyo/commit/63d6707a50e160b872b07b34141a3849886c9cf9))
+
 ## [1.4.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.3.6...v1.4.0) (2026-06-09)
 
 ### Features
