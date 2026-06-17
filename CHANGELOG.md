@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.0...v1.5.1) (2026-06-17)
+
+### Bug Fixes
+
+* **dt-sbom:** read DT CI key from renamed OpenBao path ([#203](https://github.com/jabrown93/homebridge-onkyo/issues/203)) ([97ddf6f](https://github.com/jabrown93/homebridge-onkyo/commit/97ddf6f158987cf4738f0e2a3480149d569acf2d))
+
 ## [1.5.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.4.0...v1.5.0) (2026-06-14)
 
 ### Features
