@@ -1,13 +1,15 @@
 # homebridge-onkyo
 
-[![npm](https://img.shields.io/npm/dt/homebridge-onkyo.svg)](https://www.npmjs.com/package/homebridge-onkyo)
-[![npm](https://img.shields.io/npm/l/homebridge-onkyo.svg)](https://github.com/jabrown93/homebridge-onkyo/blob/master/LICENSE)
+[![npm version](https://img.shields.io/npm/v/@jabrown93/homebridge-onkyo)](https://www.npmjs.com/package/@jabrown93/homebridge-onkyo)
+[![npm downloads](https://img.shields.io/npm/dt/@jabrown93/homebridge-onkyo)](https://www.npmjs.com/package/@jabrown93/homebridge-onkyo)
+[![npm weekly downloads](https://img.shields.io/npm/dw/@jabrown93/homebridge-onkyo)](https://www.npmjs.com/package/@jabrown93/homebridge-onkyo)
+[![license](https://img.shields.io/npm/l/@jabrown93/homebridge-onkyo.svg)](https://github.com/jabrown93/homebridge-onkyo/blob/main/LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/jabrown93/homebridge-onkyo/build.yml?label=build)](https://github.com/jabrown93/homebridge-onkyo/actions/workflows/build.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/jabrown93/homebridge-onkyo/codeql.yml?label=CodeQL)](https://github.com/jabrown93/homebridge-onkyo/actions/workflows/codeql.yml)
+[![Release](https://img.shields.io/github/v/release/jabrown93/homebridge-onkyo)](https://github.com/jabrown93/homebridge-onkyo/releases)
+[![Issues](https://img.shields.io/github/issues/jabrown93/homebridge-onkyo)](https://github.com/jabrown93/homebridge-onkyo/issues)
 
-[![NPM Version](https://img.shields.io/npm/v/homebridge-onkyo.svg)](https://www.npmjs.com/package/homebridge-onkyo)
-![Node.js CI](https://github.com/jabrown93/homebridge-onkyo/workflows/Node.js%20CI/badge.svg?branch=master)
-![CodeQL](https://github.com/jabrown93/homebridge-onkyo/workflows/CodeQL/badge.svg)
-
-## WARNING: This plugin is not actively maintained except for automated dependnecy updates. Issues/bugs are unlikely to be addressed. Use at your own risk
+## WARNING: This plugin is not actively maintained except for automated dependency updates. Issues/bugs are unlikely to be addressed. Use at your own risk
 
 
 Homebridge plugin for Onkyo Receivers
