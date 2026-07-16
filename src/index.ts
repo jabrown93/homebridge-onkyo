@@ -1,5 +1,5 @@
 import type {API} from "homebridge";
-import {OnkyoPlatform} from "./onkyoPlatform.js";
+import {OnkyoPlatform} from "./onkyo-platform.js";
 import {PLATFORM_NAME} from "./settings.js";
 
 /**

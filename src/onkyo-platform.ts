@@ -6,7 +6,7 @@ import {
 	type PlatformConfig,
 } from "homebridge";
 import {Eiscp} from "./eiscp/eiscp.js";
-import {OnkyoReceiver} from "./onkyoReceiver.js";
+import {OnkyoReceiver} from "./onkyo-receiver.js";
 
 export class OnkyoPlatform implements DynamicPlatformPlugin {
 	public readonly api: API;

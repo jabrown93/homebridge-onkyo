@@ -1,4 +1,4 @@
-import {type ReceiverInputConfig} from './receiverInputConfig.js';
+import {type ReceiverInputConfig} from './receiver-input-config.js';
 
 export type ReceiverConfig = {
 	default_input?: string;

@@ -1,9 +1,9 @@
 import {type CharacteristicValue, type PlatformAccessory, type Service} from "homebridge";
 import pollingtoevent from "polling-to-event";
-import {type OnkyoPlatform} from './onkyoPlatform.js';
-import {type ReceiverConfig} from './receiverConfig.js';
+import {type OnkyoPlatform} from './onkyo-platform.js';
+import {type ReceiverConfig} from './receiver-config.js';
 import {type Eiscp} from './eiscp/eiscp.js';
-import {type ReceiverInputConfig} from "./receiverInputConfig.js";
+import {type ReceiverInputConfig} from "./receiver-input-config.js";
 import eiscpDataAll from './eiscp/eiscp-commands.json' with {type: 'json' };
 import {PLUGIN_NAME} from './settings.js';
 
@@ -22,7 +22,7 @@ type CommandZones = {
 export class OnkyoReceiver {
 	private readonly platform: OnkyoPlatform;
 	private readonly eiscp: Eiscp;
-	private setAttempt: number;
+	private attemptCount: number;
 	private readonly receiver: ReceiverConfig;
 	private readonly cmdMap: CommandZones;
 	private readonly buttons: Map<number, string>;
@@ -62,7 +62,7 @@ export class OnkyoReceiver {
 		this.platform.log.debug('Debug mode enabled');
 
 		this.eiscp = platform.connections[receiver.ip_address];
-		this.setAttempt = 0;
+		this.attemptCount = 0;
 
 		this.platform.log.debug('name %s', this.receiver.name);
 		this.platform.log.debug('IP %s', this.receiver.ip_address);
@@ -399,7 +399,7 @@ export class OnkyoReceiver {
 			throw new Error('No ip_address defined.');
 		}
 
-		this.setAttempt++;
+		this.attemptCount++;
 
 		this.state = powerOn as boolean;
 		if (!powerOn) {
@@ -555,7 +555,7 @@ export class OnkyoReceiver {
 			done => {
 				this.platform.log.debug("start PWR polling..");
 				const isRes = this.getPowerState('statuspoll');
-				done(null, isRes, this.setAttempt);
+				done(null, isRes, this.attemptCount);
 			},
 			{
 				longpolling: true,
@@ -576,7 +576,7 @@ export class OnkyoReceiver {
 			done => {
 				this.platform.log.debug("start INPUT polling..");
 				const res = this.getInputSource("i_statuspoll");
-				done(null, res, this.setAttempt);
+				done(null, res, this.attemptCount);
 			},
 			{
 				longpolling: true,
@@ -597,7 +597,7 @@ export class OnkyoReceiver {
 			done => {
 				this.platform.log.debug("start MUTE polling..");
 				const isRes = this.getMuteState('m_statuspoll');
-				done(null, isRes, this.setAttempt);
+				done(null, isRes, this.attemptCount);
 			},
 			{
 				longpolling: true,
@@ -618,7 +618,7 @@ export class OnkyoReceiver {
 			done => {
 				this.platform.log.debug("start VOLUME polling..");
 				const res = this.getVolumeState("v_statuspoll");
-				done(null, res, this.setAttempt);
+				done(null, res, this.attemptCount);
 			},
 			{
 				longpolling: true,
@@ -743,7 +743,7 @@ export class OnkyoReceiver {
 			throw new Error('No ip_address defined.');
 		}
 
-		this.setAttempt++;
+		this.attemptCount++;
 
 		// Are we mapping volume to 100%?
 		if (this.receiver.map_volume_100) {
@@ -812,7 +812,7 @@ export class OnkyoReceiver {
 			throw new Error('No ip_address defined.');
 		}
 
-		this.setAttempt++;
+		this.attemptCount++;
 
 		if (
 			volumeDirection
@@ -928,7 +928,7 @@ export class OnkyoReceiver {
 			throw new Error('No ip_address defined.');
 		}
 
-		this.setAttempt++;
+		this.attemptCount++;
 
 		this.m_state = muteOn as boolean;
 		if (this.m_state) {
@@ -1044,7 +1044,7 @@ export class OnkyoReceiver {
 			throw new Error('No ip_address defined.');
 		}
 
-		this.setAttempt++;
+		this.attemptCount++;
 
 		this.i_state = source;
 		const label = this.RxInputs.Inputs[this.i_state - 1].label;
