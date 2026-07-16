@@ -376,6 +376,19 @@ export class Eiscp extends EventEmitter {
         let data;
         if (command === 'ECN') {
           data = message.slice(3).split('/');
+          if (data.length < 4) {
+            this.emit(
+              'debug',
+              util.format(
+                'DEBUG (received_discovery) Ignored malformed discovery reply from %s:%s - %j',
+                rinfo.address,
+                rinfo.port,
+                message
+              )
+            );
+            return;
+          }
+
           result.push({
             host: rinfo.address,
             port: data[1],

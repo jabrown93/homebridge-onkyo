@@ -1,11 +1,9 @@
 /* eslint-disable no-console */
-import util from 'utils';
-
 import { Eiscp } from '../eiscp.js';
 const eiscp = new Eiscp(console);
 
-eiscp.on('debug', util.log);
-eiscp.on('error', util.log);
+eiscp.on('debug', console.log);
+eiscp.on('error', console.log);
 
 // Discover receviers on network, stop after 2 receviers or 5 seconds
 
