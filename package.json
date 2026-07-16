@@ -51,46 +51,53 @@
       "prettier --write"
     ]
   },
-  "xo": {
-    "ignores": "eiscp",
-    "files": "**/*.ts",
-    "rules": {
-      "unicorn/prefer-module": "warn",
-      "unicorn/no-new-array": "warn",
-      "unicorn/no-for-each": "warn",
-      "camelcase": "off",
-      "kebabCase": "off",
-      "no-mixed-spaces-and-tabs": "warn",
-      "no-useless-escape": "warn",
-      "indent": "off",
-      "quotes": "warn",
-      "capitalized-comments": "off",
-      "no-var": "warn",
-      "prefer-destructuring": "off",
-      "prefer-arrow-callback": "warn",
-      "object-shorthand": [
-        "off",
-        "always",
-        {
-          "ignoreConstructors": true
-        }
-      ],
-      "quote-props": "error",
-      "no-unused-vars": "warn",
-      "curly": [
-        "error",
-        "multi-or-nest",
-        "consistent"
-      ],
-      "no-use-before-define": [
-        "error",
-        {
-          "classes": false
-        }
+  "xo": [
+    {
+      "ignores": [
+        "src/eiscp/**",
+        "CHANGELOG.md"
       ]
     },
-    "space": false
-  },
+    {
+      "files": "**/*.ts",
+      "space": false,
+      "rules": {
+        "unicorn/prefer-module": "warn",
+        "unicorn/no-new-array": "warn",
+        "unicorn/no-for-each": "warn",
+        "camelcase": "off",
+        "kebabCase": "off",
+        "no-mixed-spaces-and-tabs": "warn",
+        "no-useless-escape": "warn",
+        "indent": "off",
+        "quotes": "warn",
+        "capitalized-comments": "off",
+        "no-var": "warn",
+        "prefer-destructuring": "off",
+        "prefer-arrow-callback": "warn",
+        "object-shorthand": [
+          "off",
+          "always",
+          {
+            "ignoreConstructors": true
+          }
+        ],
+        "quote-props": "error",
+        "no-unused-vars": "warn",
+        "curly": [
+          "error",
+          "multi-or-nest",
+          "consistent"
+        ],
+        "no-use-before-define": [
+          "error",
+          {
+            "classes": false
+          }
+        ]
+      }
+    }
+  ],
   "dependencies": {
     "async": "^3.2.6",
     "polling-to-event": "^2.1.0"
