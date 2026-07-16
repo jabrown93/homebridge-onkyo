@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022"],
+    "lib": ["ES2024"],
     "module": "nodenext",
-    "target": "ES2022",
+    "target": "ES2024",
     "rootDir": "src",
     "moduleResolution": "nodenext",
     "strict": true,
