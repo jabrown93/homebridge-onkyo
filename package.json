@@ -91,10 +91,8 @@
     "space": false
   },
   "dependencies": {
-    "async": "*",
-    "js-yaml": "*",
-    "polling-to-event": "^2.1.0",
-    "utils": "^0.3.1"
+    "async": "^3.2.6",
+    "polling-to-event": "^2.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.1",
@@ -123,6 +121,7 @@
     "homebridge": "2.1.1",
     "homebridge-config-ui-x": "5.24.0",
     "husky": "9.1.7",
+    "js-yaml": "^4.2.0",
     "lint-staged": "17.0.8",
     "nodemon": "3.1.14",
     "npm-run-all2": "9.0.2",
