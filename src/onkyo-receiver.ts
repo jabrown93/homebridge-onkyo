@@ -329,8 +329,11 @@ export class OnkyoReceiver {
 		);
 	}
 
-	private eventInput(response) {
-		if (response) {
+	private eventInput(response: string | string[] | undefined) {
+		if (response === undefined) {
+			// Then invalid Input chosen
+			this.platform.log.error('eventInput - ERROR - INVALID INPUT - Model does not support selected input.');
+		} else {
 			let input = JSON.stringify(response);
 			input = input.replaceAll(/["\[\]]+/gv, '');
 			if (input.includes(','))
@@ -352,9 +355,6 @@ export class OnkyoReceiver {
 				this.iState,
 				input,
 			);
-		} else {
-			// Then invalid Input chosen
-			this.platform.log.error('eventInput - ERROR - INVALID INPUT - Model does not support selected input.');
 		}
 
 		this.tvService?.updateCharacteristic(
@@ -363,7 +363,7 @@ export class OnkyoReceiver {
 		);
 	}
 
-	private eventVolume(response) {
+	private eventVolume(response: number) {
 		if (this.receiver.map_volume_100) {
 			const volumeMultiplier = (this.receiver.max_volume ?? 1) / 100;
 			const newVolume = response / volumeMultiplier;
@@ -715,7 +715,7 @@ export class OnkyoReceiver {
 		return this.vState;
 	}
 
-	private setVolumeState(volumeLvl, context) {
+	private setVolumeState(volumeLvl: CharacteristicValue, context) {
 		// if context is v_statuspoll, then we need to ensure this we do not set the actual value
 		if (context === 'v_statuspoll') {
 			this.platform.log.debug(
@@ -731,29 +731,30 @@ export class OnkyoReceiver {
 		}
 
 		this.attemptCount++;
+		const volumeLevel = volumeLvl as number;
 
 		// Are we mapping volume to 100%?
 		if (this.receiver.map_volume_100) {
-			const volumeMultiplier = this.receiver.max_volume
+			const volumeMultiplier = this.receiver.max_volume !== undefined && this.receiver.max_volume !== 0
 				? this.receiver.max_volume / 100
 				: 100;
-			const newVolume = volumeMultiplier * volumeLvl;
+			const newVolume = volumeMultiplier * volumeLevel;
 			this.vState = Math.round(newVolume);
 			this.platform.log.debug(
 				'setVolumeState - actual mode, PERCENT, volume vState: %s',
 				this.vState,
 			);
-		} else if (volumeLvl > (this.receiver.max_volume ?? 100)) {
+		} else if (volumeLevel > (this.receiver.max_volume ?? 100)) {
 			// Determine if max_volume threshold breached, if so set to max.
 			this.vState = this.receiver.max_volume ?? 100;
 			this.platform.log.debug(
 				'setVolumeState - VOLUME LEVEL of: %s exceeds max_volume: %s. Resetting to max.',
-				volumeLvl,
+				volumeLevel,
 				this.receiver.max_volume,
 			);
 		} else {
 			// Must be using actual volume number
-			this.vState = volumeLvl;
+			this.vState = volumeLevel;
 			this.platform.log.debug(
 				'setVolumeState - actual mode, ACTUAL volume vState: %s',
 				this.vState,
@@ -1016,7 +1017,7 @@ export class OnkyoReceiver {
 		return this.iState;
 	}
 
-	private setInputSource(source, context) {
+	private setInputSource(source: CharacteristicValue, context) {
 		// if context is i_statuspoll, then we need to ensure this we do not set the actual value
 		if (context === 'i_statuspoll') {
 			this.platform.log.info(
@@ -1033,7 +1034,7 @@ export class OnkyoReceiver {
 
 		this.attemptCount++;
 
-		this.iState = source;
+		this.iState = source as number;
 		const label = this.rxInputs.inputs[this.iState - 1].label;
 
 		this.platform.log.debug(
@@ -1053,7 +1054,7 @@ export class OnkyoReceiver {
 					this.platform.log.error(
 						'setInputState - INPUT : ERROR - current iState:%s - Source:%s',
 						this.iState,
-						source.toString(),
+						(source as number).toString(),
 					);
 				}
 			},
@@ -1065,29 +1066,31 @@ export class OnkyoReceiver {
 		);
 	}
 
-	private remoteKeyPress(button) {
-		if (this.buttons.get(button)) {
-			const press = this.buttons.get(button);
-			this.platform.log.debug('remoteKeyPress - INPUT: pressing key %s', press);
-			this.eiscp.command(this.receiver.zone + '.setup=' + press, error => {
-				if (error === undefined)
-					return;
-
-				this.iState = 1;
-				this.platform.log.error(
-					'remoteKeyPress - INPUT: ERROR pressing button %s',
-					press,
-				);
-			});
-		} else {
+	private remoteKeyPress(remoteKey: CharacteristicValue) {
+		const button = remoteKey as number;
+		const press = this.buttons.get(button);
+		if (press === undefined) {
 			this.platform.log.error('Remote button %d not supported.', button);
+			return;
 		}
+
+		this.platform.log.debug('remoteKeyPress - INPUT: pressing key %s', press);
+		this.eiscp.command(this.receiver.zone + '.setup=' + press, error => {
+			if (error === undefined)
+				return;
+
+			this.iState = 1;
+			this.platform.log.error(
+				'remoteKeyPress - INPUT: ERROR pressing button %s',
+				press,
+			);
+		});
 	}
 
 	/// /////////////////////
 	// TV SERVICE FUNCTIONS
 	/// /////////////////////
-	private addSources(service) {
+	private addSources(service: Service) {
 		// If input name mappings are provided, use them.
 		// Option to only receiver specified inputs with filter_inputs
 		this.platform.log.debug('Supported inputs', this.rxInputs.inputs);
@@ -1119,7 +1122,7 @@ export class OnkyoReceiver {
 		});
 	}
 
-	private setupInput(inputCode, name: string, hapId: number, television: Service) {
+	private setupInput(inputCode: string, name: string, hapId: number, television: Service) {
 		const normalizedName = name.replace('-', ' ');
 		const input = this.accessory.addService(
 			this.platform.api.hap.Service.InputSource,
@@ -1184,7 +1187,7 @@ export class OnkyoReceiver {
 		return informationService;
 	}
 
-	private createVolumeType(service) {
+	private createVolumeType(service: Service) {
 		if (this.receiver.volume_type === 'dimmer') {
 			this.dimmer = this.accessory.addService(
 				this.platform.api.hap.Service.Lightbulb,
@@ -1195,7 +1198,7 @@ export class OnkyoReceiver {
 				.getCharacteristic(this.platform.api.hap.Characteristic.On)
 			// Inverted logic taken from https://github.com/langovoi/homebridge-upnp
 				.onGet(() => !this.getMuteState(null))
-				.onSet(value => this.setMuteState(!value, ''));
+				.onSet(value => this.setMuteState(!(value as boolean), ''));
 			this.dimmer
 				.addCharacteristic(this.platform.api.hap.Characteristic.Brightness)
 				.onGet(this.getVolumeState.bind(this))
@@ -1212,7 +1215,7 @@ export class OnkyoReceiver {
 				.getCharacteristic(this.platform.api.hap.Characteristic.On)
 			// Inverted logic taken from https://github.com/langovoi/homebridge-upnp
 				.onGet(context => !this.getMuteState(context))
-				.onSet((value, context) => this.setMuteState(!value, context));
+				.onSet((value, context) => this.setMuteState(!(value as boolean), context as string));
 			this.speed
 				.addCharacteristic(this.platform.api.hap.Characteristic.RotationSpeed)
 				.onGet(this.getVolumeState.bind(this))
