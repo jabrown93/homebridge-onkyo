@@ -4,9 +4,9 @@ import {
 	type Logger,
 	type PlatformAccessory,
 	type PlatformConfig,
-} from "homebridge";
-import {Eiscp} from "./eiscp/eiscp.js";
-import {OnkyoReceiver} from "./onkyo-receiver.js";
+} from 'homebridge';
+import {Eiscp} from './eiscp/eiscp.js';
+import {OnkyoReceiver} from './onkyo-receiver.js';
 
 export class OnkyoPlatform implements DynamicPlatformPlugin {
 	public readonly api: API;
@@ -16,7 +16,7 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 	public readonly accessories: PlatformAccessory[];
 	public readonly existingAccessories: Map<string, PlatformAccessory>;
 
-	public readonly connections: Record<string, any>;
+	public readonly connections: Record<string, Eiscp>;
 	public numberReceivers?: number;
 
 	constructor(log: Logger, config: PlatformConfig, api: API) {
@@ -33,10 +33,10 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 			throw new Error('ERROR: your configuration is incorrect. Configuration changed with version 0.7.x');
 		}
 
-		this.log.info("Finished initializing platform:", this.config.name);
+		this.log.info('Finished initializing platform:', this.config.name);
 
-		this.api.on("didFinishLaunching", () => {
-			this.log.debug("Executed didFinishLaunching callback");
+		this.api.on('didFinishLaunching', () => {
+			this.log.debug('Executed didFinishLaunching callback');
 			this.createAccessories();
 		});
 	}
@@ -47,7 +47,7 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 
 	private createAccessories() {
 		this.numberReceivers = this.config.receivers.length;
-		this.log.debug("Creating %s receivers...", this.numberReceivers);
+		this.log.debug('Creating %s receivers...', this.numberReceivers);
 		if (this.numberReceivers === 0)
 			return;
 
@@ -59,9 +59,9 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 				);
 				this.connections[receiver.ip_address] = new Eiscp(this.log);
 				this.connections[receiver.ip_address].connect({
-					host: receiver.ip_address,
-					reconnect: true,
-					model: receiver.model,
+					'host': receiver.ip_address,
+					'reconnect': true,
+					'model': receiver.model,
 				});
 			}
 

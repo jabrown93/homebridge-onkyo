@@ -38,7 +38,7 @@ export default [
 
 			indent: [
 				'warn',
-				2,
+				'tab',
 				{
 					SwitchCase: 1,
 				},
@@ -48,7 +48,7 @@ export default [
 			'comma-dangle': ['warn', 'only-multiline'],
 			'dot-notation': 'off',
 			eqeqeq: 'warn',
-			curly: ['warn', 'all'],
+			curly: ['warn', 'multi-or-nest', 'consistent'],
 			'brace-style': ['warn'],
 			'prefer-arrow-callback': ['warn'],
 			'max-len': ['warn', 140],

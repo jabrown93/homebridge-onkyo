@@ -70,7 +70,10 @@
         "no-mixed-spaces-and-tabs": "warn",
         "no-useless-escape": "warn",
         "indent": "off",
-        "quotes": "warn",
+        "quotes": [
+          "warn",
+          "single"
+        ],
         "capitalized-comments": "off",
         "no-var": "warn",
         "prefer-destructuring": "off",
@@ -82,7 +85,10 @@
             "ignoreConstructors": true
           }
         ],
-        "quote-props": "error",
+        "@stylistic/quote-props": [
+          "error",
+          "always"
+        ],
         "no-unused-vars": "warn",
         "curly": [
           "error",
