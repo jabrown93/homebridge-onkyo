@@ -6,18 +6,34 @@ import util from 'util';
 import { EventEmitter } from 'events';
 import eiscp_commands from './eiscp-commands.json' with { type: 'json' };
 import { Logger } from 'homebridge';
+import type {
+  EiscpCommands,
+  EiscpCommandMappings,
+  EiscpValueMappings,
+  EiscpModelsets,
+  ValueEntry,
+} from './eiscp-commands.types.js';
 
 export class Eiscp extends EventEmitter {
   private is_connected: boolean;
   private eiscp?: net.Socket;
   private readonly log: Logger | Console;
   private readonly send_queue?;
-  private readonly COMMANDS;
-  private readonly COMMAND_MAPPINGS;
-  private readonly VALUE_MAPPINGS;
-  private readonly MODELSETS;
+  private readonly COMMANDS: EiscpCommands;
+  private readonly COMMAND_MAPPINGS: EiscpCommandMappings;
+  private readonly VALUE_MAPPINGS: EiscpValueMappings;
+  private readonly MODELSETS: EiscpModelsets;
 
-  private readonly config = {
+  private readonly config: {
+    port: number;
+    reconnect: boolean;
+    reconnect_sleep: number;
+    modelsets: string[];
+    send_delay: number;
+    verify_commands: boolean;
+    host: string;
+    model: string | undefined;
+  } = {
     port: 60128,
     reconnect: true,
     reconnect_sleep: 5,
@@ -68,9 +84,9 @@ export class Eiscp extends EventEmitter {
     }, 1);
   }
 
-  private in_modelsets(set) {
+  private in_modelsets(set: string) {
     // returns true if set is in modelsets false otherwise
-    return this.config.modelsets.indexOf(set as unknown as never) !== -1;
+    return this.config.modelsets.indexOf(set) !== -1;
   }
 
   private eiscp_packet(data) {
@@ -126,9 +142,12 @@ export class Eiscp extends EventEmitter {
       */
     const command = iscp_message.slice(0, 3),
       value = iscp_message.slice(3),
-      result = {
+      result: {
+        command?: string | string[];
+        argument?: string | string[] | number;
+      } = {
         command: undefined,
-        argument: undefined as unknown as number,
+        argument: undefined,
       };
 
     Object.keys(this.COMMANDS).forEach(zone => {
@@ -153,13 +172,14 @@ export class Eiscp extends EventEmitter {
   }
 
   // TODO: This function is starting to get very big, it should be split up into smaller parts and oranized better
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private command_to_iscp(command: any, args?: any, zone?: any) {
+  private command_to_iscp(command: string, args?: string, zone?: string) {
     /*
         Transform high-level command to a low-level ISCP message
       */
 
-    function parse_command(cmd) {
+    function parse_command(
+      cmd: string
+    ): false | { zone: string; command: string; value: string } {
       // Splits and normalizes command into 3 parts: { zone, command, value }
       // Split by space, dot, equals and colon
       const parts = cmd
@@ -210,6 +230,10 @@ export class Eiscp extends EventEmitter {
       args = parts.value;
     }
 
+    if (zone === undefined || args === undefined) {
+      return;
+    }
+
     this.emit(
       'debug',
       util.format(
@@ -247,13 +271,13 @@ export class Eiscp extends EventEmitter {
     const prefix = this.COMMAND_MAPPINGS[zone][command];
     let value;
 
-    if (typeof this.VALUE_MAPPINGS[zone][prefix][args] === 'undefined') {
-      if (
-        typeof this.VALUE_MAPPINGS[zone][prefix].INTRANGES !== 'undefined' &&
-        /^\d+$/.test(args)
-      ) {
+    const mapping = this.VALUE_MAPPINGS[zone][prefix];
+    const entry = mapping[args];
+
+    if (entry === undefined) {
+      if (mapping.INTRANGES !== undefined && /^\d+$/.test(args)) {
         // This command is part of a integer range
-        const intranges = this.VALUE_MAPPINGS[zone][prefix].INTRANGES;
+        const intranges = mapping.INTRANGES;
         const len = intranges.length;
         for (let i = 0; i < len; i += 1) {
           if (
@@ -297,9 +321,9 @@ export class Eiscp extends EventEmitter {
       }
     } else if (
       !this.config.verify_commands ||
-      this.in_modelsets(this.VALUE_MAPPINGS[zone][prefix][args].models)
+      this.in_modelsets((entry as ValueEntry).models)
     ) {
-      value = this.VALUE_MAPPINGS[zone][prefix][args].value;
+      value = (entry as ValueEntry).value;
     } else {
       this.emit(
         'error',
@@ -497,8 +521,8 @@ export class Eiscp extends EventEmitter {
       */
     Object.keys(this.MODELSETS).forEach(set => {
       this.MODELSETS[set].forEach(models => {
-        if (models.indexOf(this.config.model) !== -1) {
-          this.config.modelsets.push(set as unknown as never);
+        if (models.indexOf(this.config.model!) !== -1) {
+          this.config.modelsets.push(set);
         }
       });
     });
@@ -612,7 +636,7 @@ export class Eiscp extends EventEmitter {
     }
   }
 
-  public raw(data, callback) {
+  public raw(data, callback?: (error: unknown, message?: string | null) => void) {
     /*
         Send a low level command like PWR01
         callback only tells you that the command was sent but not that it succsessfully did what you asked
@@ -628,7 +652,7 @@ export class Eiscp extends EventEmitter {
     }
   }
 
-  public command(data, callback?) {
+  public command(data, callback?: (error: unknown, message?: string | null) => void) {
     /*
         Send a high level command like system-power=query
         callback only tells you that the command was sent but not that it succsessfully did what you asked
