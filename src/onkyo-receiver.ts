@@ -4,7 +4,7 @@ import {type OnkyoPlatform} from './onkyo-platform.js';
 import {type ReceiverConfig} from './receiver-config.js';
 import {type Eiscp} from './eiscp/eiscp.js';
 import {type ReceiverInputConfig} from './receiver-input-config.js';
-import eiscpDataAll from './eiscp/eiscp-commands.json' with {'type': 'json'};
+import eiscpDataAll from './eiscp/eiscp-commands.json' with {type: 'json'};
 import {PLUGIN_NAME} from './settings.js';
 import {type EiscpCommandsFile} from './eiscp/eiscp-commands.types.js';
 
@@ -14,13 +14,14 @@ type RxInput = {
 };
 
 type CommandInputs = {
-	'power'?: string;
-	'volume'?: string;
-	'input'?: string;
-	'muting'?: string;
+	'power': string;
+	'volume': string;
+	'input': string;
+	'muting': string;
 };
 
 type CommandZones = {
+	[zone: string]: CommandInputs;
 	'main': CommandInputs;
 	'zone2': CommandInputs;
 };

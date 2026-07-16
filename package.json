@@ -100,7 +100,8 @@
           {
             "classes": false
           }
-        ]
+        ],
+        "new-cap": "off"
       }
     }
   ],

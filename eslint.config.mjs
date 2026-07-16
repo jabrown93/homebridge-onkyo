@@ -12,7 +12,7 @@ const compat = new FlatCompat({
 	allConfig: js.configs.all,
 });
 
-export default [
+const eslintConfig = [
 	{
 		ignores: [
 			'**/homebridge-ui',
@@ -79,3 +79,5 @@ export default [
 		},
 	},
 ];
+
+export default eslintConfig;

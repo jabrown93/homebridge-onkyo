@@ -1,4 +1,4 @@
-export default {
+const commitlintConfig = {
 	extends: ['@commitlint/config-conventional'],
 	rules: {
 		'body-max-line-length': [2, 'never', '500'],
@@ -7,3 +7,5 @@ export default {
 		'subject-case': [2, 'never', ['upper-case', 'pascal-case', 'start-case']],
 	},
 };
+
+export default commitlintConfig;

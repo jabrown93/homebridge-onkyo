@@ -3,14 +3,14 @@ import {
 	type DynamicPlatformPlugin,
 	type Logger,
 	type PlatformAccessory,
-	type PlatformConfig,
 } from 'homebridge';
 import {Eiscp} from './eiscp/eiscp.js';
 import {OnkyoReceiver} from './onkyo-receiver.js';
+import {type Config} from './eiscp/config.js';
 
 export class OnkyoPlatform implements DynamicPlatformPlugin {
 	public readonly api: API;
-	public readonly config: PlatformConfig;
+	public readonly config: Config;
 	public readonly log: Logger;
 	public readonly receiverAccessories: OnkyoReceiver[];
 	public readonly accessories: PlatformAccessory[];
@@ -19,7 +19,7 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 	public readonly connections: Record<string, Eiscp>;
 	public numberReceivers?: number;
 
-	constructor(log: Logger, config: PlatformConfig, api: API) {
+	constructor(log: Logger, config: Config, api: API) {
 		this.api = api;
 		this.config = config;
 		this.log = log;
@@ -41,10 +41,6 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 		});
 	}
 
-	configureAccessory(accessory: PlatformAccessory) {
-		this.existingAccessories.set(accessory.UUID, accessory);
-	}
-
 	private createAccessories() {
 		this.numberReceivers = this.config.receivers.length;
 		this.log.debug('Creating %s receivers...', this.numberReceivers);
@@ -52,7 +48,7 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 			return;
 
 		this.config.receivers.forEach(receiver => {
-			if (!this.connections[receiver.ip_address]) {
+			if (!Object.hasOwn(this.connections, receiver.ip_address)) {
 				this.log.debug(
 					'Creating new connection for ip %s',
 					receiver.ip_address,
@@ -76,5 +72,9 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 			const onkyoReceiver = new OnkyoReceiver(this, receiver, accessory);
 			this.receiverAccessories.push(onkyoReceiver);
 		});
+	}
+
+	configureAccessory(accessory: PlatformAccessory) {
+		this.existingAccessories.set(accessory.UUID, accessory);
 	}
 }
