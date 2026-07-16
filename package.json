@@ -53,10 +53,11 @@
   },
   "xo": {
     "ignores": "eiscp",
+    "files": "**/*.ts",
     "rules": {
       "unicorn/prefer-module": "warn",
       "unicorn/no-new-array": "warn",
-      "unicorn/no-array-for-each": "warn",
+      "unicorn/no-for-each": "warn",
       "camelcase": "off",
       "kebabCase": "off",
       "no-mixed-spaces-and-tabs": "warn",
@@ -117,7 +118,7 @@
     "eslint": "10.7.0",
     "eslint-plugin-ava": "17.0.1",
     "eslint-plugin-json": "4.0.1",
-    "eslint-plugin-unicorn": "latest",
+    "eslint-plugin-unicorn": "^71.1.0",
     "homebridge": "2.1.1",
     "homebridge-config-ui-x": "5.24.0",
     "husky": "9.1.7",
