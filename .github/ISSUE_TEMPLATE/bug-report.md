@@ -22,7 +22,7 @@ assignees: ''
 
 **Logs:**
 
-```
+```text
 Show the Homebridge logs here, remove any sensitive information.
 ```
 

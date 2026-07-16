@@ -47,7 +47,7 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 		if (this.numberReceivers === 0)
 			return;
 
-		this.config.receivers.forEach(receiver => {
+		for (const receiver of this.config.receivers) {
 			if (!Object.hasOwn(this.connections, receiver.ip_address)) {
 				this.log.debug(
 					'Creating new connection for ip %s',
@@ -71,7 +71,7 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
 				);
 			const onkyoReceiver = new OnkyoReceiver(this, receiver, accessory);
 			this.receiverAccessories.push(onkyoReceiver);
-		});
+		}
 	}
 
 	configureAccessory(accessory: PlatformAccessory) {

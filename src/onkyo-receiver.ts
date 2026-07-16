@@ -4,10 +4,8 @@ import {type OnkyoPlatform} from './onkyo-platform.js';
 import {type ReceiverConfig} from './receiver-config.js';
 import {type Eiscp} from './eiscp/eiscp.js';
 import {type ReceiverInputConfig} from './receiver-input-config.js';
-// eslint-disable-next-line @stylistic/quote-props -- import attribute keys are identifiers, not object-literal properties; unicorn/prefer-identifier-import-export-specifiers wants this one unquoted
-import eiscpDataAll from './eiscp/eiscp-commands.json' with {type: 'json'};
+import eiscpCommandsData from './eiscp/eiscp-commands-data.js';
 import {PLUGIN_NAME} from './settings.js';
-import {type EiscpCommandsFile} from './eiscp/eiscp-commands.types.js';
 
 type RxInput = {
 	'code': string;
@@ -168,8 +166,7 @@ export class OnkyoReceiver {
 		this.mState = false;
 		this.vState = 0;
 		this.iState = 0;
-		// eslint-disable-next-line unicorn/prefer-number-coercion -- Number() would reject trailing non-numeric characters instead of truncating like the original parseInt did; keeping parseInt's lenient parsing for this user-supplied config value
-		this.interval = Number.parseInt(this.receiver.poll_status_interval, 10);
+		this.interval = Number(this.receiver.poll_status_interval);
 		this.avrManufacturer = 'Onkyo';
 		this.avrSerial = this.receiver.serial ?? this.receiver.ip_address;
 		this.platform.log.debug('avrSerial: %s', this.avrSerial);
@@ -221,7 +218,7 @@ export class OnkyoReceiver {
 	}
 
 	private createRxInput() {
-		const data: EiscpCommandsFile = eiscpDataAll;
+		const data = eiscpCommandsData;
 		const inSets: string[] = [];
 		for (const set in data.modelsets) {
 			if (!Object.hasOwn(data.modelsets, set))
