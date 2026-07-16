@@ -4,7 +4,8 @@ import {type OnkyoPlatform} from './onkyo-platform.js';
 import {type ReceiverConfig} from './receiver-config.js';
 import {type Eiscp} from './eiscp/eiscp.js';
 import {type ReceiverInputConfig} from './receiver-input-config.js';
-import eiscpDataAll from './eiscp/eiscp-commands.json' with {'type': 'json'};
+// eslint-disable-next-line @stylistic/quote-props -- import attribute keys are identifiers, not object-literal properties; unicorn/prefer-identifier-import-export-specifiers wants this one unquoted
+import eiscpDataAll from './eiscp/eiscp-commands.json' with {type: 'json'};
 import {PLUGIN_NAME} from './settings.js';
 import {type EiscpCommandsFile} from './eiscp/eiscp-commands.types.js';
 
@@ -331,7 +332,7 @@ export class OnkyoReceiver {
 	private eventInput(response) {
 		if (response) {
 			let input = JSON.stringify(response);
-			input = input.replaceAll(/["[\]]+/gu, '');
+			input = input.replaceAll(/["\[\]]+/gv, '');
 			if (input.includes(','))
 				input = input.slice(0, input.indexOf(','));
 
@@ -387,7 +388,7 @@ export class OnkyoReceiver {
 		);
 	}
 
-	eventClose(response) {
+	private eventClose(response) {
 		this.platform.log.debug('eventClose: %s', response);
 	}
 
@@ -550,8 +551,8 @@ export class OnkyoReceiver {
 			},
 		);
 
-		statusemitter.on('statuspoll', (data: boolean) => {
-			this.state = data;
+		statusemitter.on('statuspoll', (isOn: boolean) => {
+			this.state = isOn;
 			this.platform.log.debug(
 				'event - PWR status poller - new state: ',
 				this.state,
@@ -592,8 +593,8 @@ export class OnkyoReceiver {
 			},
 		);
 
-		mStatusEmitter.on('m_statuspoll', (data: boolean) => {
-			this.mState = data;
+		mStatusEmitter.on('m_statuspoll', (isMuted: boolean) => {
+			this.mState = isMuted;
 			this.platform.log.debug(
 				'event - MUTE status poller - new mState: ',
 				this.mState,
@@ -783,7 +784,7 @@ export class OnkyoReceiver {
 		);
 	}
 
-	setVolumeRelative(volumeDirection, context) {
+	private setVolumeRelative(volumeDirection, context) {
 		// if context is v_statuspoll, then we need to ensure this we do not set the actual value
 		if (context === 'v_statuspoll') {
 			this.platform.log.debug(
@@ -1015,7 +1016,7 @@ export class OnkyoReceiver {
 		return this.iState;
 	}
 
-	setInputSource(source, context) {
+	private setInputSource(source, context) {
 		// if context is i_statuspoll, then we need to ensure this we do not set the actual value
 		if (context === 'i_statuspoll') {
 			this.platform.log.info(
@@ -1064,7 +1065,7 @@ export class OnkyoReceiver {
 		);
 	}
 
-	remoteKeyPress(button) {
+	private remoteKeyPress(button) {
 		if (this.buttons.get(button)) {
 			const press = this.buttons.get(button);
 			this.platform.log.debug('remoteKeyPress - INPUT: pressing key %s', press);
@@ -1083,15 +1084,10 @@ export class OnkyoReceiver {
 		}
 	}
 
-	identify(callback) {
-		this.platform.log.info('Identify requested! %s', this.receiver.ip_address);
-		callback(); // success
-	}
-
 	/// /////////////////////
 	// TV SERVICE FUNCTIONS
 	/// /////////////////////
-	addSources(service) {
+	private addSources(service) {
 		// If input name mappings are provided, use them.
 		// Option to only receiver specified inputs with filter_inputs
 		this.platform.log.debug('Supported inputs', this.rxInputs.inputs);
@@ -1123,7 +1119,7 @@ export class OnkyoReceiver {
 		});
 	}
 
-	setupInput(inputCode, name: string, hapId: number, television: Service) {
+	private setupInput(inputCode, name: string, hapId: number, television: Service) {
 		const normalizedName = name.replace('-', ' ');
 		const input = this.accessory.addService(
 			this.platform.api.hap.Service.InputSource,
@@ -1188,7 +1184,7 @@ export class OnkyoReceiver {
 		return informationService;
 	}
 
-	createVolumeType(service) {
+	private createVolumeType(service) {
 		if (this.receiver.volume_type === 'dimmer') {
 			this.dimmer = this.accessory.addService(
 				this.platform.api.hap.Service.Lightbulb,
@@ -1226,7 +1222,7 @@ export class OnkyoReceiver {
 		}
 	}
 
-	createTvService() {
+	private createTvService() {
 		this.platform.log.debug(
 			'Creating TV service for receiver %s',
 			this.receiver.name,
@@ -1268,7 +1264,7 @@ export class OnkyoReceiver {
 		return tvService;
 	}
 
-	createTvSpeakerService() {
+	private createTvSpeakerService() {
 		this.platform.log.debug(
 			'Creating TV Speaker service for receiver `%s`',
 			this.receiver.name,
