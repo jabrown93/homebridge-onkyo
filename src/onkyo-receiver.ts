@@ -4,7 +4,7 @@ import {type OnkyoPlatform} from './onkyo-platform.js';
 import {type ReceiverConfig} from './receiver-config.js';
 import {type Eiscp} from './eiscp/eiscp.js';
 import {type ReceiverInputConfig} from './receiver-input-config.js';
-import eiscpDataAll from './eiscp/eiscp-commands.json' with {type: 'json'};
+import eiscpDataAll from './eiscp/eiscp-commands.json' with {'type': 'json'};
 import {PLUGIN_NAME} from './settings.js';
 import {type EiscpCommandsFile} from './eiscp/eiscp-commands.types.js';
 
@@ -34,22 +34,20 @@ export class OnkyoReceiver {
 	private readonly cmdMap: CommandZones;
 	private readonly buttons: Map<number, string>;
 	private state: boolean;
-	private m_state: boolean;
-	private v_state: number;
-	private i_state: number;
+	private mState: boolean;
+	private vState: number;
+	private iState: number;
 	private readonly interval: number;
 	private readonly avrManufacturer: string;
 	private readonly avrSerial: string;
 	private readonly switchHandling: string;
 	private tvService?: Service;
-	public accessory: PlatformAccessory;
-	private infoService?: Service;
 	private tvSpeakerService?: Service;
-	private RxInputs!: {'Inputs': RxInput[]};
-	private reachable: boolean;
+	private rxInputs!: {'inputs': RxInput[]};
 	private dimmer?: Service;
 	private speed?: Service;
 	private readonly inputs?: ReceiverInputConfig[];
+	public accessory: PlatformAccessory;
 
 	constructor(
 		platform: OnkyoPlatform,
@@ -59,7 +57,6 @@ export class OnkyoReceiver {
 		this.platform = platform;
 		this.receiver = receiver;
 		this.accessory = accessory;
-		this.reachable = true;
 		this.inputs = this.receiver.inputs;
 
 		this.platform.log.info('**************************************************************');
@@ -103,15 +100,14 @@ export class OnkyoReceiver {
 			},
 		};
 
-		this.receiver.poll_status_interval =
-			this.receiver.poll_status_interval ?? '0';
+		this.receiver.poll_status_interval ??= '0';
 		this.platform.log.debug(
 			'poll_status_interval: %s',
 			this.receiver.poll_status_interval,
 		);
-		this.receiver.max_volume = this.receiver.max_volume ?? 60;
+		this.receiver.max_volume ??= 60;
 		this.platform.log.debug('max_volume: %s', this.receiver.max_volume);
-		this.receiver.map_volume_100 = this.receiver.map_volume_100 ?? true;
+		this.receiver.map_volume_100 ??= true;
 		this.platform.log.debug('map_volume_100: %s', this.receiver.map_volume_100);
 		this.buttons = new Map();
 		this.buttons.set(
@@ -168,9 +164,10 @@ export class OnkyoReceiver {
 		);
 
 		this.state = false;
-		this.m_state = false;
-		this.v_state = 0;
-		this.i_state = 0;
+		this.mState = false;
+		this.vState = 0;
+		this.iState = 0;
+		// eslint-disable-next-line unicorn/prefer-number-coercion -- Number() would reject trailing non-numeric characters instead of truncating like the original parseInt did; keeping parseInt's lenient parsing for this user-supplied config value
 		this.interval = Number.parseInt(this.receiver.poll_status_interval, 10);
 		this.avrManufacturer = 'Onkyo';
 		this.avrSerial = this.receiver.serial ?? this.receiver.ip_address;
@@ -206,11 +203,11 @@ export class OnkyoReceiver {
 	private setUp() {
 		this.createRxInput();
 		this.polling();
-		this.infoService = this.createAccessoryInformationService();
+		this.createAccessoryInformationService();
 		this.tvService = this.createTvService();
 		this.tvSpeakerService = this.createTvSpeakerService();
 		this.addSources(this.tvService);
-		if (this.receiver.volume_type && this.receiver.volume_type !== 'none') {
+		if (this.receiver.volume_type !== undefined && this.receiver.volume_type !== '' && this.receiver.volume_type !== 'none') {
 			this.platform.log.debug(
 				'Creating %s service linked to TV for receiver %s',
 				this.receiver.volume_type,
@@ -226,10 +223,10 @@ export class OnkyoReceiver {
 		const data: EiscpCommandsFile = eiscpDataAll;
 		const inSets: string[] = [];
 		for (const set in data.modelsets) {
-			for (const model of data.modelsets[set]) {
-				if (!model.includes(this.receiver.model))
-					continue;
+			if (!Object.hasOwn(data.modelsets, set))
+				continue;
 
+			if (data.modelsets[set].some(model => model.includes(this.receiver.model))) {
 				this.platform.log.debug('Found modelset: %s', set);
 				inSets.push(set);
 			}
@@ -238,10 +235,13 @@ export class OnkyoReceiver {
 		// Get list of commands from eiscpData
 		const eiscpData = data.commands.main.SLI.values;
 		// Create a JSON object for inputs from the eiscpData
-		const inputs: {'Inputs': RxInput[]} = {
-			'Inputs': [],
+		const inputs: {'inputs': RxInput[]} = {
+			'inputs': [],
 		};
 		for (const exkey in eiscpData) {
+			if (!Object.hasOwn(eiscpData, exkey))
+				continue;
+
 			const name = eiscpData[exkey].name;
 			if (name === undefined)
 				continue;
@@ -267,7 +267,7 @@ export class OnkyoReceiver {
 			if (newExkey === '“26”')
 				newExkey = '26';
 
-			if (!(newExkey in eiscpData) || !('models' in eiscpData[newExkey]))
+			if (!Object.hasOwn(eiscpData, newExkey) || !Object.hasOwn(eiscpData[newExkey], 'models'))
 				continue;
 
 			const set = eiscpData[newExkey].models;
@@ -277,11 +277,11 @@ export class OnkyoReceiver {
 					'code': newExkey,
 					'label': hold,
 				};
-				inputs.Inputs.push(input);
+				inputs.inputs.push(input);
 			}
 		}
 
-		this.RxInputs = inputs;
+		this.rxInputs = inputs;
 	}
 
 	/// ////////////////
@@ -297,7 +297,6 @@ export class OnkyoReceiver {
 
 	private eventConnect(response) {
 		this.platform.log.debug('eventConnect: %s', response);
-		this.reachable = true;
 	}
 
 	private eventSystemPower(response: string) {
@@ -317,39 +316,39 @@ export class OnkyoReceiver {
 	}
 
 	private eventAudioMuting(response: string) {
-		this.m_state = response === 'on';
+		this.mState = response === 'on';
 		this.platform.log.debug(
-			'eventAudioMuting - message: %s, new m_state %s',
+			'eventAudioMuting - message: %s, new mState %s',
 			response,
-			this.m_state,
+			this.mState,
 		);
 		this.tvSpeakerService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Mute,
-			this.m_state,
+			this.mState,
 		);
 	}
 
 	private eventInput(response) {
 		if (response) {
 			let input = JSON.stringify(response);
-			input = input.replaceAll(/["[\]]+/g, '');
+			input = input.replaceAll(/["[\]]+/gu, '');
 			if (input.includes(','))
 				input = input.slice(0, input.indexOf(','));
 
-			// Convert to i_state input code
+			// Convert to iState input code
 			const index =
 				input === null
 					? -1
-					: this.RxInputs.Inputs.findIndex(i => i.label === input);
-			if (this.i_state !== index + 1)
+					: this.rxInputs.inputs.findIndex(i => i.label === input);
+			if (this.iState !== index + 1)
 				this.platform.log.info('Event - Input changed: %s', input);
 
-			this.i_state = index + 1;
+			this.iState = index + 1;
 
 			this.platform.log.debug(
-				'eventInput - message: %s - new i_state: %s - input: %s',
+				'eventInput - message: %s - new iState: %s - input: %s',
 				response,
-				this.i_state,
+				this.iState,
 				input,
 			);
 		} else {
@@ -359,7 +358,7 @@ export class OnkyoReceiver {
 
 		this.tvService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.ActiveIdentifier,
-			this.i_state,
+			this.iState,
 		);
 	}
 
@@ -367,30 +366,29 @@ export class OnkyoReceiver {
 		if (this.receiver.map_volume_100) {
 			const volumeMultiplier = (this.receiver.max_volume ?? 1) / 100;
 			const newVolume = response / volumeMultiplier;
-			this.v_state = Math.round(newVolume);
+			this.vState = Math.round(newVolume);
 			this.platform.log.debug(
-				'eventVolume - message: %s, new v_state %s PERCENT',
+				'eventVolume - message: %s, new vState %s PERCENT',
 				response,
-				this.v_state,
+				this.vState,
 			);
 		} else {
-			this.v_state = response;
+			this.vState = response;
 			this.platform.log.debug(
-				'eventVolume - message: %s, new v_state %s ACTUAL',
+				'eventVolume - message: %s, new vState %s ACTUAL',
 				response,
-				this.v_state,
+				this.vState,
 			);
 		}
 
 		this.tvSpeakerService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Volume,
-			this.v_state,
+			this.vState,
 		);
 	}
 
 	eventClose(response) {
 		this.platform.log.debug('eventClose: %s', response);
-		this.reachable = false;
 	}
 
 	/// /////////////////////
@@ -398,7 +396,7 @@ export class OnkyoReceiver {
 	/// /////////////////////
 	private setPowerState(powerOn: CharacteristicValue, context: string): void {
 		// if context is statuspoll, then we need to ensure that we do not set the actual value
-		if (context && context === 'statuspoll') {
+		if (context === 'statuspoll') {
 			this.platform.log.debug(
 				'setPowerState - polling mode, ignore, state: %s',
 				this.state,
@@ -473,11 +471,11 @@ export class OnkyoReceiver {
 						+ this.cmdMap[this.receiver.zone].volume
 						+ ':'
 						+ this.receiver.default_volume,
-						error => {
-							if (error) {
+						volumeError => {
+							if (volumeError) {
 								this.platform.log.error(
 									'Error while setting default volume: %s',
-									error,
+									volumeError,
 								);
 							}
 						},
@@ -502,8 +500,8 @@ export class OnkyoReceiver {
 				const index =
 					label === null
 						? -1
-						: this.RxInputs.Inputs.findIndex(i => i.label === label);
-				this.i_state = index + 1;
+						: this.rxInputs.inputs.findIndex(i => i.label === label);
+				this.iState = index + 1;
 
 				if (powerOn && label) {
 					this.platform.log.info('Setting default input selector to ' + label);
@@ -513,11 +511,11 @@ export class OnkyoReceiver {
 						+ this.cmdMap[this.receiver.zone].input
 						+ '='
 						+ label,
-						error => {
-							if (error) {
+						inputError => {
+							if (inputError) {
 								this.platform.log.error(
 									'Error while setting default input: %s',
-									error,
+									inputError,
 								);
 							}
 						},
@@ -526,30 +524,6 @@ export class OnkyoReceiver {
 			},
 		);
 
-		this.tvService?.updateCharacteristic(
-			this.platform.api.hap.Characteristic.Active,
-			this.state,
-		);
-	}
-
-	private updatePowerState() {
-		this.platform.log.debug('updatePowerState - current state: %s', this.state);
-		this.eiscp.command(
-			this.receiver.zone
-			+ '.'
-			+ this.cmdMap[this.receiver.zone].power
-			+ '=query',
-			error => {
-				if (!error)
-					return;
-
-				this.state = false;
-				this.platform.log.debug(
-					'updatePowerState - PWR QRY: ERROR - current state: %s',
-					this.state,
-				);
-			},
-		);
 		this.tvService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Active,
 			this.state,
@@ -566,8 +540,8 @@ export class OnkyoReceiver {
 		const statusemitter = pollingtoevent(
 			done => {
 				this.platform.log.debug('start PWR polling..');
-				const isRes = this.getPowerState('statuspoll');
-				done(null, isRes, this.attemptCount);
+				const isResponse = this.getPowerState('statuspoll');
+				done(null, isResponse, this.attemptCount);
 			},
 			{
 				'longpolling': true,
@@ -576,7 +550,7 @@ export class OnkyoReceiver {
 			},
 		);
 
-		statusemitter.on('statuspoll', data => {
+		statusemitter.on('statuspoll', (data: boolean) => {
 			this.state = data;
 			this.platform.log.debug(
 				'event - PWR status poller - new state: ',
@@ -584,11 +558,11 @@ export class OnkyoReceiver {
 			);
 		});
 		// Audio-Input Polling
-		const i_statusemitter = pollingtoevent(
+		const iStatusEmitter = pollingtoevent(
 			done => {
 				this.platform.log.debug('start INPUT polling..');
-				const res = this.getInputSource('i_statuspoll');
-				done(null, res, this.attemptCount);
+				const response = this.getInputSource('i_statuspoll');
+				done(null, response, this.attemptCount);
 			},
 			{
 				'longpolling': true,
@@ -597,19 +571,19 @@ export class OnkyoReceiver {
 			},
 		);
 
-		i_statusemitter.on('i_statuspoll', data => {
-			this.i_state = data;
+		iStatusEmitter.on('i_statuspoll', (data: number) => {
+			this.iState = data;
 			this.platform.log.debug(
-				'event - INPUT status poller - new i_state: ',
-				this.i_state,
+				'event - INPUT status poller - new iState: ',
+				this.iState,
 			);
 		});
 		// Audio-Muting Polling
-		const m_statusemitter = pollingtoevent(
+		const mStatusEmitter = pollingtoevent(
 			done => {
 				this.platform.log.debug('start MUTE polling..');
-				const isRes = this.getMuteState('m_statuspoll');
-				done(null, isRes, this.attemptCount);
+				const isResponse = this.getMuteState('m_statuspoll');
+				done(null, isResponse, this.attemptCount);
 			},
 			{
 				'longpolling': true,
@@ -618,19 +592,19 @@ export class OnkyoReceiver {
 			},
 		);
 
-		m_statusemitter.on('m_statuspoll', data => {
-			this.m_state = data;
+		mStatusEmitter.on('m_statuspoll', (data: boolean) => {
+			this.mState = data;
 			this.platform.log.debug(
-				'event - MUTE status poller - new m_state: ',
-				this.m_state,
+				'event - MUTE status poller - new mState: ',
+				this.mState,
 			);
 		});
 		// Volume Polling
-		const v_statusemitter = pollingtoevent(
+		const vStatusEmitter = pollingtoevent(
 			done => {
 				this.platform.log.debug('start VOLUME polling..');
-				const res = this.getVolumeState('v_statuspoll');
-				done(null, res, this.attemptCount);
+				const response = this.getVolumeState('v_statuspoll');
+				done(null, response, this.attemptCount);
 			},
 			{
 				'longpolling': true,
@@ -639,11 +613,11 @@ export class OnkyoReceiver {
 			},
 		);
 
-		v_statusemitter.on('v_statuspoll', data => {
-			this.v_state = data;
+		vStatusEmitter.on('v_statuspoll', (data: number) => {
+			this.vState = data;
 			this.platform.log.debug(
-				'event - VOLUME status poller - new v_state: ',
-				this.v_state,
+				'event - VOLUME status poller - new vState: ',
+				this.vState,
 			);
 		});
 	}
@@ -651,7 +625,7 @@ export class OnkyoReceiver {
 	private getPowerState(context) {
 		// if context is statuspoll, then we need to request the actual value
 		if (
-			(!context || context !== 'statuspoll')
+			context !== 'statuspoll'
 			&& this.switchHandling === 'poll'
 		) {
 			this.platform.log.debug(
@@ -696,14 +670,14 @@ export class OnkyoReceiver {
 	private getVolumeState(context) {
 		// if context is v_statuspoll, then we need to request the actual value
 		if (
-			(!context || context !== 'v_statuspoll')
+			context !== 'v_statuspoll'
 			&& this.switchHandling === 'poll'
 		) {
 			this.platform.log.debug(
-				'getVolumeState - polling mode, return v_state: ',
-				this.v_state,
+				'getVolumeState - polling mode, return vState: ',
+				this.vState,
 			);
-			return this.v_state;
+			return this.vState;
 		}
 
 		if (!this.receiver.ip_address) {
@@ -712,8 +686,8 @@ export class OnkyoReceiver {
 		}
 
 		this.platform.log.debug(
-			'getVolumeState - actual mode, return v_state: ',
-			this.v_state,
+			'getVolumeState - actual mode, return vState: ',
+			this.vState,
 		);
 		this.eiscp.command(
 			this.receiver.zone
@@ -724,28 +698,28 @@ export class OnkyoReceiver {
 				if (!error)
 					return;
 
-				this.v_state = 0;
+				this.vState = 0;
 				this.platform.log.debug(
-					'getVolumeState - VOLUME QRY: ERROR - current v_state: %s',
-					this.v_state,
+					'getVolumeState - VOLUME QRY: ERROR - current vState: %s',
+					this.vState,
 				);
 			},
 		);
 
 		this.tvSpeakerService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Volume,
-			this.v_state,
+			this.vState,
 		);
 
-		return this.v_state;
+		return this.vState;
 	}
 
 	private setVolumeState(volumeLvl, context) {
 		// if context is v_statuspoll, then we need to ensure this we do not set the actual value
-		if (context && context === 'v_statuspoll') {
+		if (context === 'v_statuspoll') {
 			this.platform.log.debug(
-				'setVolumeState - polling mode, ignore, v_state: %s',
-				this.v_state,
+				'setVolumeState - polling mode, ignore, vState: %s',
+				this.vState,
 			);
 			return;
 		}
@@ -763,14 +737,14 @@ export class OnkyoReceiver {
 				? this.receiver.max_volume / 100
 				: 100;
 			const newVolume = volumeMultiplier * volumeLvl;
-			this.v_state = Math.round(newVolume);
+			this.vState = Math.round(newVolume);
 			this.platform.log.debug(
-				'setVolumeState - actual mode, PERCENT, volume v_state: %s',
-				this.v_state,
+				'setVolumeState - actual mode, PERCENT, volume vState: %s',
+				this.vState,
 			);
 		} else if (volumeLvl > (this.receiver.max_volume ?? 100)) {
 			// Determine if max_volume threshold breached, if so set to max.
-			this.v_state = this.receiver.max_volume ?? 100;
+			this.vState = this.receiver.max_volume ?? 100;
 			this.platform.log.debug(
 				'setVolumeState - VOLUME LEVEL of: %s exceeds max_volume: %s. Resetting to max.',
 				volumeLvl,
@@ -778,10 +752,10 @@ export class OnkyoReceiver {
 			);
 		} else {
 			// Must be using actual volume number
-			this.v_state = volumeLvl;
+			this.vState = volumeLvl;
 			this.platform.log.debug(
-				'setVolumeState - actual mode, ACTUAL volume v_state: %s',
-				this.v_state,
+				'setVolumeState - actual mode, ACTUAL volume vState: %s',
+				this.vState,
 			);
 		}
 
@@ -790,31 +764,31 @@ export class OnkyoReceiver {
 			+ '.'
 			+ this.cmdMap[this.receiver.zone].volume
 			+ ':'
-			+ this.v_state,
+			+ this.vState,
 			error => {
 				if (!error)
 					return;
 
-				this.v_state = 0;
+				this.vState = 0;
 				this.platform.log.debug(
-					'setVolumeState - VOLUME : ERROR - current v_state: %s',
-					this.v_state,
+					'setVolumeState - VOLUME : ERROR - current vState: %s',
+					this.vState,
 				);
 			},
 		);
 
 		this.tvSpeakerService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Volume,
-			this.v_state,
+			this.vState,
 		);
 	}
 
 	setVolumeRelative(volumeDirection, context) {
 		// if context is v_statuspoll, then we need to ensure this we do not set the actual value
-		if (context && context === 'v_statuspoll') {
+		if (context === 'v_statuspoll') {
 			this.platform.log.debug(
-				'setVolumeRelative - polling mode, ignore, v_state: %s',
-				this.v_state,
+				'setVolumeRelative - polling mode, ignore, vState: %s',
+				this.vState,
 			);
 			return;
 		}
@@ -840,10 +814,10 @@ export class OnkyoReceiver {
 					if (!error)
 						return;
 
-					this.v_state = 0;
+					this.vState = 0;
 					this.platform.log.error(
-						'setVolumeRelative - VOLUME : ERROR - current v_state: %s',
-						this.v_state,
+						'setVolumeRelative - VOLUME : ERROR - current vState: %s',
+						this.vState,
 					);
 				},
 			);
@@ -861,10 +835,10 @@ export class OnkyoReceiver {
 					if (!error)
 						return;
 
-					this.v_state = 0;
+					this.vState = 0;
 					this.platform.log.error(
-						'setVolumeRelative - VOLUME : ERROR - current v_state: %s',
-						this.v_state,
+						'setVolumeRelative - VOLUME : ERROR - current vState: %s',
+						this.vState,
 					);
 				},
 			);
@@ -874,21 +848,21 @@ export class OnkyoReceiver {
 
 		this.tvSpeakerService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Volume,
-			this.v_state,
+			this.vState,
 		);
 	}
 
 	private getMuteState(context) {
 		// if context is m_statuspoll, then we need to request the actual value
 		if (
-			(!context || context !== 'm_statuspoll')
+			context !== 'm_statuspoll'
 			&& this.switchHandling === 'poll'
 		) {
 			this.platform.log.debug(
-				'getMuteState - polling mode, return m_state: ',
-				this.m_state,
+				'getMuteState - polling mode, return mState: ',
+				this.mState,
 			);
-			return this.m_state;
+			return this.mState;
 		}
 
 		if (!this.receiver.ip_address) {
@@ -897,8 +871,8 @@ export class OnkyoReceiver {
 		}
 
 		this.platform.log.debug(
-			'getMuteState - actual mode, return m_state: ',
-			this.m_state,
+			'getMuteState - actual mode, return mState: ',
+			this.mState,
 		);
 		this.eiscp.command(
 			this.receiver.zone
@@ -909,30 +883,30 @@ export class OnkyoReceiver {
 				if (!error)
 					return;
 
-				this.m_state = false;
+				this.mState = false;
 				this.platform.log.debug(
-					'getMuteState - MUTE QRY: ERROR - current m_state: %s',
-					this.m_state,
+					'getMuteState - MUTE QRY: ERROR - current mState: %s',
+					this.mState,
 				);
 			},
 		);
 
 		this.tvSpeakerService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Mute,
-			this.m_state,
+			this.mState,
 		);
 
-		return this.m_state;
+		return this.mState;
 	}
 
 	private setMuteState(muteOn: CharacteristicValue, context: string) {
 		// if context is m_statuspoll, then we need to ensure this we do not set the actual value
-		if (context && context === 'm_statuspoll') {
+		if (context === 'm_statuspoll') {
 			this.platform.log.debug(
-				'setMuteState - polling mode, ignore, m_state: %s',
-				this.m_state,
+				'setMuteState - polling mode, ignore, mState: %s',
+				this.mState,
 			);
-			return this.m_state;
+			return this.mState;
 		}
 
 		if (!this.receiver.ip_address) {
@@ -942,11 +916,11 @@ export class OnkyoReceiver {
 
 		this.attemptCount++;
 
-		this.m_state = muteOn as boolean;
-		if (this.m_state) {
+		this.mState = muteOn as boolean;
+		if (this.mState) {
 			this.platform.log.debug(
-				'setMuteState - actual mode, mute m_state: %s, switching to ON',
-				this.m_state,
+				'setMuteState - actual mode, mute mState: %s, switching to ON',
+				this.mState,
 			);
 			this.eiscp.command(
 				this.receiver.zone
@@ -957,17 +931,17 @@ export class OnkyoReceiver {
 					if (!error)
 						return;
 
-					this.m_state = false;
+					this.mState = false;
 					this.platform.log.error(
-						'setMuteState - MUTE ON: ERROR - current m_state: %s',
-						this.m_state,
+						'setMuteState - MUTE ON: ERROR - current mState: %s',
+						this.mState,
 					);
 				},
 			);
 		} else {
 			this.platform.log.debug(
-				'setMuteState - actual mode, mute m_state: %s, switching to OFF',
-				this.m_state,
+				'setMuteState - actual mode, mute mState: %s, switching to OFF',
+				this.mState,
 			);
 			this.eiscp.command(
 				this.receiver.zone
@@ -978,10 +952,10 @@ export class OnkyoReceiver {
 					if (!error)
 						return;
 
-					this.m_state = false;
+					this.mState = false;
 					this.platform.log.error(
-						'setMuteState - MUTE OFF: ERROR - current m_state: %s',
-						this.m_state,
+						'setMuteState - MUTE OFF: ERROR - current mState: %s',
+						this.mState,
 					);
 				},
 			);
@@ -989,22 +963,22 @@ export class OnkyoReceiver {
 
 		this.tvSpeakerService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.Mute,
-			this.m_state,
+			this.mState,
 		);
-		return this.m_state;
+		return this.mState;
 	}
 
 	private getInputSource(context: string) {
 		// if context is i_statuspoll, then we need to request the actual value
 		if (
-			(!context || context !== 'i_statuspoll')
+			context !== 'i_statuspoll'
 			&& this.switchHandling === 'poll'
 		) {
 			this.platform.log.debug(
-				'getInputState - polling mode, return i_state: ',
-				this.i_state,
+				'getInputState - polling mode, return iState: ',
+				this.iState,
 			);
-			return this.i_state;
+			return this.iState;
 		}
 
 		if (!this.receiver.ip_address) {
@@ -1013,8 +987,8 @@ export class OnkyoReceiver {
 		}
 
 		this.platform.log.debug(
-			'getInputState - actual mode, return i_state: ',
-			this.i_state,
+			'getInputState - actual mode, return iState: ',
+			this.iState,
 		);
 		this.eiscp.command(
 			this.receiver.zone
@@ -1025,28 +999,28 @@ export class OnkyoReceiver {
 				if (!error)
 					return;
 
-				this.i_state = 1;
+				this.iState = 1;
 				this.platform.log.error(
-					'getInputState - INPUT QRY: ERROR - current i_state: %s',
-					this.i_state,
+					'getInputState - INPUT QRY: ERROR - current iState: %s',
+					this.iState,
 				);
 			},
 		);
 
 		this.tvService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.ActiveIdentifier,
-			this.i_state,
+			this.iState,
 		);
 
-		return this.i_state;
+		return this.iState;
 	}
 
 	setInputSource(source, context) {
 		// if context is i_statuspoll, then we need to ensure this we do not set the actual value
-		if (context && context === 'i_statuspoll') {
+		if (context === 'i_statuspoll') {
 			this.platform.log.info(
-				'setInputState - polling mode, ignore, i_state: %s',
-				this.i_state,
+				'setInputState - polling mode, ignore, iState: %s',
+				this.iState,
 			);
 			return;
 		}
@@ -1058,12 +1032,12 @@ export class OnkyoReceiver {
 
 		this.attemptCount++;
 
-		this.i_state = source;
-		const label = this.RxInputs.Inputs[this.i_state - 1].label;
+		this.iState = source;
+		const label = this.rxInputs.inputs[this.iState - 1].label;
 
 		this.platform.log.debug(
-			'setInputState - actual mode, ACTUAL input i_state: %s - label: %s',
-			this.i_state,
+			'setInputState - actual mode, ACTUAL input iState: %s - label: %s',
+			this.iState,
 			label,
 		);
 
@@ -1076,8 +1050,8 @@ export class OnkyoReceiver {
 			error => {
 				if (error) {
 					this.platform.log.error(
-						'setInputState - INPUT : ERROR - current i_state:%s - Source:%s',
-						this.i_state,
+						'setInputState - INPUT : ERROR - current iState:%s - Source:%s',
+						this.iState,
 						source.toString(),
 					);
 				}
@@ -1086,7 +1060,7 @@ export class OnkyoReceiver {
 
 		this.tvService?.updateCharacteristic(
 			this.platform.api.hap.Characteristic.ActiveIdentifier,
-			this.i_state,
+			this.iState,
 		);
 	}
 
@@ -1098,7 +1072,7 @@ export class OnkyoReceiver {
 				if (!error)
 					return;
 
-				this.i_state = 1;
+				this.iState = 1;
 				this.platform.log.error(
 					'remoteKeyPress - INPUT: ERROR pressing button %s',
 					press,
@@ -1120,15 +1094,15 @@ export class OnkyoReceiver {
 	addSources(service) {
 		// If input name mappings are provided, use them.
 		// Option to only receiver specified inputs with filter_inputs
-		this.platform.log.debug('Supported inputs', this.RxInputs.Inputs);
+		this.platform.log.debug('Supported inputs', this.rxInputs.inputs);
 		if (this.receiver.filter_inputs && this.inputs) {
-			// Check the RxInputs.Inputs items to see if each exists in this.inputs. Return new array of those that do.
-			this.RxInputs.Inputs = this.RxInputs.Inputs.filter(rxinput => this.inputs?.some(input => input.input_name === rxinput.label));
+			// Check the rxInputs.inputs items to see if each exists in this.inputs. Return new array of those that do.
+			this.rxInputs.inputs = this.rxInputs.inputs.filter(rxinput => this.inputs?.some(input => input.input_name === rxinput.label));
 		}
 
-		this.platform.log.debug('Inputs: %s', this.RxInputs.Inputs);
+		this.platform.log.debug('Inputs: %s', this.rxInputs.inputs);
 		// Create final array of inputs, using any labels defined in the receiver's inputs to override the default labels
-		return this.RxInputs.Inputs.map((i, index: number) => {
+		return this.rxInputs.inputs.map((i, index: number) => {
 			const hapId = index + 1;
 			let inputName = i.label;
 			if (this.inputs) {
