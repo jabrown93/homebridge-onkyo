@@ -405,7 +405,7 @@ export class OnkyoReceiver {
 			return;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -413,7 +413,7 @@ export class OnkyoReceiver {
 		this.attemptCount++;
 
 		this.state = powerOn as boolean;
-		if (!powerOn) {
+		if (!this.state) {
 			this.platform.log.debug(
 				'setPowerState - actual mode, power state: %s, switching to OFF',
 				this.state,
@@ -424,7 +424,7 @@ export class OnkyoReceiver {
 				+ this.cmdMap[this.receiver.zone].power
 				+ '=standby',
 				error => {
-					if (!error)
+					if (error === undefined)
 						return;
 
 					this.state = false;
@@ -448,7 +448,7 @@ export class OnkyoReceiver {
 		this.eiscp.command(
 			this.receiver.zone + '.' + this.cmdMap[this.receiver.zone].power + '=on',
 			error => {
-				if (error) {
+				if (error !== undefined) {
 					this.state = false;
 					this.platform.log.error(
 						'setPowerState - PWR ON: ERROR - current state: %s',
@@ -464,7 +464,7 @@ export class OnkyoReceiver {
 				// If the AVR has just been turned on, apply the default volume
 				this.platform.log.debug('Attempting to set the default volume to '
 					+ this.receiver.default_volume);
-				if (this.receiver.default_volume) {
+				if (this.receiver.default_volume !== undefined && this.receiver.default_volume !== 0) {
 					this.platform.log.info('Setting default volume to ' + this.receiver.default_volume);
 					this.eiscp.command(
 						this.receiver.zone
@@ -473,7 +473,7 @@ export class OnkyoReceiver {
 						+ ':'
 						+ this.receiver.default_volume,
 						volumeError => {
-							if (volumeError) {
+							if (volumeError !== undefined) {
 								this.platform.log.error(
 									'Error while setting default volume: %s',
 									volumeError,
@@ -504,7 +504,7 @@ export class OnkyoReceiver {
 						: this.rxInputs.inputs.findIndex(i => i.label === label);
 				this.iState = index + 1;
 
-				if (powerOn && label) {
+				if (this.state && label !== undefined && label !== '') {
 					this.platform.log.info('Setting default input selector to ' + label);
 					this.eiscp.command(
 						this.receiver.zone
@@ -513,7 +513,7 @@ export class OnkyoReceiver {
 						+ '='
 						+ label,
 						inputError => {
-							if (inputError) {
+							if (inputError !== undefined) {
 								this.platform.log.error(
 									'Error while setting default input: %s',
 									inputError,
@@ -636,7 +636,7 @@ export class OnkyoReceiver {
 			return this.state;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -651,7 +651,7 @@ export class OnkyoReceiver {
 			+ this.cmdMap[this.receiver.zone].power
 			+ '=query',
 			error => {
-				if (!error)
+				if (error === undefined)
 					return;
 
 				this.state = false;
@@ -681,7 +681,7 @@ export class OnkyoReceiver {
 			return this.vState;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -696,7 +696,7 @@ export class OnkyoReceiver {
 			+ this.cmdMap[this.receiver.zone].volume
 			+ '=query',
 			error => {
-				if (!error)
+				if (error === undefined)
 					return;
 
 				this.vState = 0;
@@ -725,7 +725,7 @@ export class OnkyoReceiver {
 			return;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -767,7 +767,7 @@ export class OnkyoReceiver {
 			+ ':'
 			+ this.vState,
 			error => {
-				if (!error)
+				if (error === undefined)
 					return;
 
 				this.vState = 0;
@@ -794,7 +794,7 @@ export class OnkyoReceiver {
 			return;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -812,7 +812,7 @@ export class OnkyoReceiver {
 				+ this.cmdMap[this.receiver.zone].volume
 				+ ':level-up',
 				error => {
-					if (!error)
+					if (error === undefined)
 						return;
 
 					this.vState = 0;
@@ -833,7 +833,7 @@ export class OnkyoReceiver {
 				+ this.cmdMap[this.receiver.zone].volume
 				+ ':level-down',
 				error => {
-					if (!error)
+					if (error === undefined)
 						return;
 
 					this.vState = 0;
@@ -866,7 +866,7 @@ export class OnkyoReceiver {
 			return this.mState;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -881,7 +881,7 @@ export class OnkyoReceiver {
 			+ this.cmdMap[this.receiver.zone].muting
 			+ '=query',
 			error => {
-				if (!error)
+				if (error === undefined)
 					return;
 
 				this.mState = false;
@@ -910,7 +910,7 @@ export class OnkyoReceiver {
 			return this.mState;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -929,7 +929,7 @@ export class OnkyoReceiver {
 				+ this.cmdMap[this.receiver.zone].muting
 				+ '=on',
 				error => {
-					if (!error)
+					if (error === undefined)
 						return;
 
 					this.mState = false;
@@ -950,7 +950,7 @@ export class OnkyoReceiver {
 				+ this.cmdMap[this.receiver.zone].muting
 				+ '=off',
 				error => {
-					if (!error)
+					if (error === undefined)
 						return;
 
 					this.mState = false;
@@ -982,7 +982,7 @@ export class OnkyoReceiver {
 			return this.iState;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -997,7 +997,7 @@ export class OnkyoReceiver {
 			+ this.cmdMap[this.receiver.zone].input
 			+ '=query',
 			error => {
-				if (!error)
+				if (error === undefined)
 					return;
 
 				this.iState = 1;
@@ -1026,7 +1026,7 @@ export class OnkyoReceiver {
 			return;
 		}
 
-		if (!this.receiver.ip_address) {
+		if (this.receiver.ip_address === '') {
 			this.platform.log.error('Ignoring request; No ip_address defined.');
 			throw new Error('No ip_address defined.');
 		}
@@ -1049,7 +1049,7 @@ export class OnkyoReceiver {
 			+ ':'
 			+ label,
 			error => {
-				if (error) {
+				if (error !== undefined) {
 					this.platform.log.error(
 						'setInputState - INPUT : ERROR - current iState:%s - Source:%s',
 						this.iState,
@@ -1070,7 +1070,7 @@ export class OnkyoReceiver {
 			const press = this.buttons.get(button);
 			this.platform.log.debug('remoteKeyPress - INPUT: pressing key %s', press);
 			this.eiscp.command(this.receiver.zone + '.setup=' + press, error => {
-				if (!error)
+				if (error === undefined)
 					return;
 
 				this.iState = 1;
