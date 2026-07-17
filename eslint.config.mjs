@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import tsParser from '@typescript-eslint/parser';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,6 +79,7 @@ const eslintConfig = [
       '@typescript-eslint/explicit-module-boundary-types': 'off',
     },
   },
+  eslintConfigPrettier,
 ];
 
 export default eslintConfig;

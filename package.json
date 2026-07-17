@@ -39,7 +39,7 @@
     "watch": "npm run setup-config && npm run build && npm link && nodemon",
     "semantic-release": "cross-env semantic-release --no-ci",
     "release": "npm-run-all build semantic-release",
-    "test": "xo",
+    "test": "vitest run --passWithNoTests",
     "prepare": "husky",
     "tsc": "tsc --noEmit",
     "setup-config": "if [ ! -f ./test/hbConfig/config.json ]; then cp ./test/hbConfig/config-template.json ./test/hbConfig/config.json; fi",
@@ -51,60 +51,6 @@
       "prettier --write"
     ]
   },
-  "xo": [
-    {
-      "ignores": [
-        "src/eiscp/**",
-        "CHANGELOG.md"
-      ]
-    },
-    {
-      "files": "**/*.ts",
-      "space": false,
-      "rules": {
-        "unicorn/prefer-module": "warn",
-        "unicorn/no-new-array": "warn",
-        "unicorn/no-for-each": "warn",
-        "camelcase": "off",
-        "kebabCase": "off",
-        "no-mixed-spaces-and-tabs": "warn",
-        "no-useless-escape": "warn",
-        "indent": "off",
-        "quotes": [
-          "warn",
-          "single"
-        ],
-        "capitalized-comments": "off",
-        "no-var": "warn",
-        "prefer-destructuring": "off",
-        "prefer-arrow-callback": "warn",
-        "object-shorthand": [
-          "off",
-          "always",
-          {
-            "ignoreConstructors": true
-          }
-        ],
-        "@stylistic/quote-props": [
-          "error",
-          "always"
-        ],
-        "no-unused-vars": "warn",
-        "curly": [
-          "error",
-          "multi-or-nest",
-          "consistent"
-        ],
-        "no-use-before-define": [
-          "error",
-          {
-            "classes": false
-          }
-        ],
-        "new-cap": "off"
-      }
-    }
-  ],
   "dependencies": {
     "async": "^3.2.6",
     "polling-to-event": "^2.1.0"
@@ -130,7 +76,7 @@
     "conventional-changelog-conventionalcommits": "9.3.1",
     "cross-env": "10.1.0",
     "eslint": "10.7.0",
-    "eslint-plugin-ava": "17.0.1",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-json": "4.0.1",
     "eslint-plugin-unicorn": "71.1.0",
     "homebridge": "2.1.1",
@@ -145,7 +91,7 @@
     "ts-node": "10.9.2",
     "typescript": "6.0.3",
     "typescript-eslint": "8.64.0",
-    "xo": "4.0.0"
+    "vitest": "4.1.10"
   },
   "engines": {
     "homebridge": "^1.8.0 || ^2.0.0-beta.0",
