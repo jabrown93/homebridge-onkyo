@@ -17,6 +17,10 @@ All notable changes to this project will be documented in this file. See
 
 ## [1.5.2](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.1...v1.5.2) (2026-07-16)
 
+### Bug Fixes
+
+* eISCP UDP discovery crash + dependency pinning cleanup ([#230](https://github.com/jabrown93/homebridge-onkyo/issues/230)) ([925128c](https://github.com/jabrown93/homebridge-onkyo/commit/925128cd1e1dd37d86b910fdce11468fd06c0c2e))
+
 ## [1.5.1](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.0...v1.5.1) (2026-06-17)
 
 ### Bug Fixes
