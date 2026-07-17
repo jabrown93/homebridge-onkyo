@@ -11,6 +11,8 @@
 
 ## WARNING: This plugin is not actively maintained except for automated dependency updates. Issues/bugs are unlikely to be addressed. Use at your own risk
 
+> Homebridge 1.x support is deprecated and will be removed in a future major release — please upgrade to Homebridge 2.x. Requires Node.js `^22.12.0`, `^24.11.0`, or `^26.0.0`.
+
 Homebridge plugin for Onkyo Receivers
 Should work for all supported models as listed in the eiscp/eiscp-commands.json file. If your model is not listed, try TX-NR609.
 
