@@ -636,7 +636,10 @@ export class Eiscp extends EventEmitter {
     }
   }
 
-  public raw(data, callback?: (error: unknown, message?: string | null) => void) {
+  public raw(
+    data,
+    callback?: (error: unknown, message?: string | null) => void
+  ) {
     /*
         Send a low level command like PWR01
         callback only tells you that the command was sent but not that it succsessfully did what you asked
@@ -652,7 +655,10 @@ export class Eiscp extends EventEmitter {
     }
   }
 
-  public command(data, callback?: (error: unknown, message?: string | null) => void) {
+  public command(
+    data,
+    callback?: (error: unknown, message?: string | null) => void
+  ) {
     /*
         Send a high level command like system-power=query
         callback only tells you that the command was sent but not that it succsessfully did what you asked
