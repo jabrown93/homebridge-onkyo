@@ -14,22 +14,22 @@
 Homebridge plugin for Onkyo Receivers
 Should work for all supported models as listed in the eiscp/eiscp-commands.json file. If your model is not listed, try TX-NR609.
 
-# Description
+## Description
 
 This is an enhanced fork from the original/unmaintained homebridge-onkyo-avr plugin written by gw-wiscon.
 Existing users of my original fork or gw-wiscon's be sure to update the "platform" config to "Onkyo".
 
-# Changelog
+## Changelog
 
 Changes are tracked via [Github Releases](https://github.com/jabrown93/homebridge-onkyo/releases).
 
-# Volume Control
+## Volume Control
 
 For Siri Control of Volume, Mute, and Input - Use an app like EVE which has control sliders and create scenes for "Volume Mute" or "Volume Unmute", and/or various volume level scenes like "Volume Low" or "Volume Loud", or for inputs like "input network" or "input fm". It may be easiest to set the volume or Input first using the OnkyoRemote3 app and then creating the scenes so the volume or input is pre-set (without using the slider).
 
 For Alexa Control of Volume, Mute, Input - (if using the Alexa plugin) - create DummySwitches (homebridge-dummy) and setup an automation to run the scene created from above. "Alexa, turn on Volume Loud."
 
-# Installation
+## Installation
 
 As a prerequisite ensure that the Onkyo receiver is controllable using the OnkyoRemote3 iOS app.
 
@@ -39,11 +39,11 @@ It is recommended to install and configure this plugin using [homebridge-config-
 2. Install this plugin using: npm install -g homebridge-onkyo
 3. Update your configuration file. See the sample below.
 
-# Configuration
+## Configuration
 
 Example accessory config (needs to be added to the homebridge config.json):
 
-```
+```json
 "platforms": [{
        "platform": "Onkyo",
        "receivers": [
@@ -95,13 +95,13 @@ Example accessory config (needs to be added to the homebridge config.json):
 | **filter_inputs**            | (optional) Boolean value. Setting this to `true` limits inputs displayed in HomeKit to those you provide in `inputs`. If `false` or not defined, all inputs supported by `model` will be displayed.                                                                                                                                                                                                                                                                                                                                                   |
 | **volume_dimmer**            | (optional) Boolean value. Setting this to `false` disables additional Dimmer accessory for separate volume control.                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
-# Troubleshooting
+## Troubleshooting
 
 For Troubleshooting look in the homebridge-onkyo/node_modules/eiscp/examples directory and see if you can run 3.ts. "node 3.ts". It should output all available commands.
 
 You can find the output also in the [wiki](https://github.com/jabrown93/homebridge-onkyo/wiki/EISCP-output-of-3.js).
 
-# EISCP Dependency
+## EISCP Dependency
 
 This plugin depends on an EISCP library. As the needed package does not reside on NPM installation of this dependency caused various problems. As a workaround, the library was copied into this project in the eiscp folder. As the library was not updated for years it is unlikely that this project misses updates on the library.
 Please note that the EISCP library is not covered under the license of of homebridge-onkyo and comes with its own license in the EISCP folder.
