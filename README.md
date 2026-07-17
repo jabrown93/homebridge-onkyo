@@ -11,7 +11,6 @@
 
 ## WARNING: This plugin is not actively maintained except for automated dependency updates. Issues/bugs are unlikely to be addressed. Use at your own risk
 
-
 Homebridge plugin for Onkyo Receivers
 Should work for all supported models as listed in the eiscp/eiscp-commands.json file. If your model is not listed, try TX-NR609.
 
