@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.4](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.3...v1.5.4) (2026-07-17)
+
+### Bug Fixes
+
+* **release:** build in prepack instead of gating publish on checks ([#235](https://github.com/jabrown93/homebridge-onkyo/issues/235)) ([4c462dd](https://github.com/jabrown93/homebridge-onkyo/commit/4c462ddff8089ce6ef0125f30fbec7569c07b786)), closes [jabrown93/.github#24](https://github.com/jabrown93/.github/issues/24)
+
 ## [1.5.3](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.2...v1.5.3) (2026-07-17)
 
 ### Bug Fixes
