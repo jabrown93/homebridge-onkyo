@@ -1,4 +1,4 @@
 export type ReceiverInputConfig = {
-	'input_name'?: string;
-	'display_name'?: string;
+  input_name?: string;
+  display_name?: string;
 };
