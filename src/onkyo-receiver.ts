@@ -185,8 +185,9 @@ export class OnkyoReceiver {
     this.avrSerial = this.receiver.serial ?? this.receiver.ip_address;
     this.platform.log.debug('avrSerial: %s', this.avrSerial);
     this.switchHandling = 'check';
-    if (this.interval > 10 && this.interval < 100_000)
+    if (this.interval > 10 && this.interval < 100_000) {
       this.switchHandling = 'poll';
+    }
 
     this.eiscp.on('debug', this.eventDebug.bind(this));
     this.eiscp.on('error', this.eventError.bind(this));
@@ -239,7 +240,9 @@ export class OnkyoReceiver {
     const data = eiscpCommandsData;
     const inSets: string[] = [];
     for (const set in data.modelsets) {
-      if (!Object.hasOwn(data.modelsets, set)) continue;
+      if (!Object.hasOwn(data.modelsets, set)) {
+        continue;
+      }
 
       if (
         data.modelsets[set].some(model => model.includes(this.receiver.model))
@@ -256,13 +259,19 @@ export class OnkyoReceiver {
       inputs: [],
     };
     for (const exkey in eiscpData) {
-      if (!Object.hasOwn(eiscpData, exkey)) continue;
+      if (!Object.hasOwn(eiscpData, exkey)) {
+        continue;
+      }
 
       const name = eiscpData[exkey].name;
-      if (name === undefined) continue;
+      if (name === undefined) {
+        continue;
+      }
 
       let hold = name.toString();
-      if (hold.includes(',')) hold = hold.slice(0, hold.indexOf(','));
+      if (hold.includes(',')) {
+        hold = hold.slice(0, hold.indexOf(','));
+      }
 
       let newExkey = exkey;
       if (exkey.includes('“') || exkey.includes('”')) {
@@ -274,17 +283,21 @@ export class OnkyoReceiver {
         newExkey.includes('UP') ||
         newExkey.includes('DOWN') ||
         newExkey.includes('QSTN')
-      )
+      ) {
         continue;
+      }
 
       // Work around specific bug for “26”
-      if (newExkey === '“26”') newExkey = '26';
+      if (newExkey === '“26”') {
+        newExkey = '26';
+      }
 
       if (
         !Object.hasOwn(eiscpData, newExkey) ||
         !Object.hasOwn(eiscpData[newExkey], 'models')
-      )
+      ) {
         continue;
+      }
 
       const set = eiscpData[newExkey].models;
 
@@ -316,8 +329,9 @@ export class OnkyoReceiver {
   }
 
   private eventSystemPower(response: string) {
-    if (this.state !== (response === 'on'))
+    if (this.state !== (response === 'on')) {
       this.platform.log.info('Event - System Power changed: %s', response);
+    }
 
     this.state = response === 'on';
     this.platform.log.debug(
@@ -353,15 +367,18 @@ export class OnkyoReceiver {
     } else {
       let input = JSON.stringify(response);
       input = input.replaceAll(/["\[\]]+/gv, '');
-      if (input.includes(',')) input = input.slice(0, input.indexOf(','));
+      if (input.includes(',')) {
+        input = input.slice(0, input.indexOf(','));
+      }
 
       // Convert to iState input code
       const index =
         input === null
           ? -1
           : this.rxInputs.inputs.findIndex(i => i.label === input);
-      if (this.iState !== index + 1)
+      if (this.iState !== index + 1) {
         this.platform.log.info('Event - Input changed: %s', input);
+      }
 
       this.iState = index + 1;
 
@@ -440,7 +457,9 @@ export class OnkyoReceiver {
           this.cmdMap[this.receiver.zone].power +
           '=standby',
         error => {
-          if (error === undefined) return;
+          if (error === undefined) {
+            return;
+          }
 
           this.state = false;
           this.platform.log.error(
@@ -515,10 +534,11 @@ export class OnkyoReceiver {
         let label = this.receiver.default_input;
         if (this.inputs) {
           for (const input of this.inputs) {
-            if (input.input_name === this.receiver.default_input)
+            if (input.input_name === this.receiver.default_input) {
               label = input.input_name;
-            else if (input.display_name === this.receiver.default_input)
+            } else if (input.display_name === this.receiver.default_input) {
               label = input.display_name;
+            }
           }
         }
 
@@ -557,7 +577,9 @@ export class OnkyoReceiver {
 
   private polling() {
     // Status Polling
-    if (this.switchHandling !== 'poll') return;
+    if (this.switchHandling !== 'poll') {
+      return;
+    }
 
     this.platform.log.debug('start long poller..');
     // PWR Polling
@@ -671,7 +693,9 @@ export class OnkyoReceiver {
         this.cmdMap[this.receiver.zone].power +
         '=query',
       error => {
-        if (error === undefined) return;
+        if (error === undefined) {
+          return;
+        }
 
         this.state = false;
         this.platform.log.debug(
@@ -712,7 +736,9 @@ export class OnkyoReceiver {
         this.cmdMap[this.receiver.zone].volume +
         '=query',
       error => {
-        if (error === undefined) return;
+        if (error === undefined) {
+          return;
+        }
 
         this.vState = 0;
         this.platform.log.debug(
@@ -784,7 +810,9 @@ export class OnkyoReceiver {
         ':' +
         this.vState,
       error => {
-        if (error === undefined) return;
+        if (error === undefined) {
+          return;
+        }
 
         this.vState = 0;
         this.platform.log.debug(
@@ -828,7 +856,9 @@ export class OnkyoReceiver {
           this.cmdMap[this.receiver.zone].volume +
           ':level-up',
         error => {
-          if (error === undefined) return;
+          if (error === undefined) {
+            return;
+          }
 
           this.vState = 0;
           this.platform.log.error(
@@ -848,7 +878,9 @@ export class OnkyoReceiver {
           this.cmdMap[this.receiver.zone].volume +
           ':level-down',
         error => {
-          if (error === undefined) return;
+          if (error === undefined) {
+            return;
+          }
 
           this.vState = 0;
           this.platform.log.error(
@@ -894,7 +926,9 @@ export class OnkyoReceiver {
         this.cmdMap[this.receiver.zone].muting +
         '=query',
       error => {
-        if (error === undefined) return;
+        if (error === undefined) {
+          return;
+        }
 
         this.mState = false;
         this.platform.log.debug(
@@ -941,7 +975,9 @@ export class OnkyoReceiver {
           this.cmdMap[this.receiver.zone].muting +
           '=on',
         error => {
-          if (error === undefined) return;
+          if (error === undefined) {
+            return;
+          }
 
           this.mState = false;
           this.platform.log.error(
@@ -961,7 +997,9 @@ export class OnkyoReceiver {
           this.cmdMap[this.receiver.zone].muting +
           '=off',
         error => {
-          if (error === undefined) return;
+          if (error === undefined) {
+            return;
+          }
 
           this.mState = false;
           this.platform.log.error(
@@ -1004,7 +1042,9 @@ export class OnkyoReceiver {
         this.cmdMap[this.receiver.zone].input +
         '=query',
       error => {
-        if (error === undefined) return;
+        if (error === undefined) {
+          return;
+        }
 
         this.iState = 1;
         this.platform.log.error(
@@ -1081,7 +1121,9 @@ export class OnkyoReceiver {
 
     this.platform.log.debug('remoteKeyPress - INPUT: pressing key %s', press);
     this.eiscp.command(this.receiver.zone + '.setup=' + press, error => {
-      if (error === undefined) return;
+      if (error === undefined) {
+        return;
+      }
 
       this.iState = 1;
       this.platform.log.error(
@@ -1112,7 +1154,9 @@ export class OnkyoReceiver {
       let inputName = i.label;
       if (this.inputs) {
         for (const input of this.inputs) {
-          if (input.input_name !== i.label) continue;
+          if (input.input_name !== i.label) {
+            continue;
+          }
 
           this.platform.log.debug(
             'Found input mapping for %s to %s ',
