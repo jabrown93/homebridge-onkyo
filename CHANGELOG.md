@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.4...v1.6.0) (2026-07-18)
+
+### Features
+
+* **engines:** standardize Node engines, CI triggers, and deprecate Homebridge 1.x ([#239](https://github.com/jabrown93/homebridge-onkyo/issues/239)) ([4007fe7](https://github.com/jabrown93/homebridge-onkyo/commit/4007fe70c8e3ca06bb36398c9fec88d7626b8e30))
+
 ## [1.5.4](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.3...v1.5.4) (2026-07-17)
 
 ### Bug Fixes
