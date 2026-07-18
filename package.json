@@ -27,6 +27,12 @@
   ],
   "type": "module",
   "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "config.schema.json",
+    "CHANGELOG.md"
+  ],
   "prettier": "@jabrown93/dev-config/prettier",
   "scripts": {
     "prettier": "prettier --check .",
