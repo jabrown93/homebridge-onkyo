@@ -20,6 +20,12 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
   public numberReceivers?: number;
 
   constructor(log: Logger, config: Config, api: API) {
+    if (api.serverVersion.startsWith('1.')) {
+      log.warn(
+        'This plugin will drop support for Homebridge 1.x in a future release. Please upgrade to Homebridge 2.x.'
+      );
+    }
+
     this.api = api;
     this.config = config;
     this.log = log;
