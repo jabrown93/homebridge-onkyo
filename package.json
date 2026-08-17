@@ -68,7 +68,7 @@
     "homebridge": "2.3.1",
     "homebridge-config-ui-x": "5.27.0",
     "husky": "9.1.7",
-    "js-yaml": "5.2.3",
+    "js-yaml": "5.3.0",
     "lint-staged": "17.3.0",
     "nodemon": "3.1.14",
     "npm-run-all2": "9.0.3",
