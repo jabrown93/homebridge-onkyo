@@ -53,8 +53,7 @@
     "prepack": "npm-run-all clean compile"
   },
   "dependencies": {
-    "async": "^3.2.6",
-    "polling-to-event": "^2.1.0"
+    "async": "^3.2.6"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.2",
