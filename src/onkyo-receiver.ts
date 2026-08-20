@@ -3,7 +3,6 @@ import {
   type PlatformAccessory,
   type Service,
 } from 'homebridge';
-import pollingtoevent from 'polling-to-event';
 import { type OnkyoPlatform } from './onkyo-platform.js';
 import { type ReceiverConfig } from './receiver-config.js';
 import { type Eiscp } from './eiscp/eiscp.js';
@@ -581,91 +580,19 @@ export class OnkyoReceiver {
       return;
     }
 
-    this.platform.log.debug('start long poller..');
-    // PWR Polling
-    const statusemitter = pollingtoevent(
-      done => {
-        this.platform.log.debug('start PWR polling..');
-        const isResponse = this.getPowerState('statuspoll');
-        done(null, isResponse, this.attemptCount);
-      },
-      {
-        longpolling: true,
-        interval: this.interval * 1000,
-        longpollEventName: 'statuspoll',
-      }
-    );
+    this.platform.log.debug('start status poller..');
+    // Poll functions only trigger eISCP query commands; actual state updates
+    // arrive through the shared Eiscp connection's event handlers.
+    const poll = () => {
+      this.platform.log.debug('polling receiver status..');
+      this.getPowerState('statuspoll');
+      this.getInputSource('i_statuspoll');
+      this.getMuteState('m_statuspoll');
+      this.getVolumeState('v_statuspoll');
+    };
 
-    statusemitter.on('statuspoll', (isOn: boolean) => {
-      this.state = isOn;
-      this.platform.log.debug(
-        'event - PWR status poller - new state: ',
-        this.state
-      );
-    });
-    // Audio-Input Polling
-    const iStatusEmitter = pollingtoevent(
-      done => {
-        this.platform.log.debug('start INPUT polling..');
-        const response = this.getInputSource('i_statuspoll');
-        done(null, response, this.attemptCount);
-      },
-      {
-        longpolling: true,
-        interval: this.interval * 1000,
-        longpollEventName: 'i_statuspoll',
-      }
-    );
-
-    iStatusEmitter.on('i_statuspoll', (data: number) => {
-      this.iState = data;
-      this.platform.log.debug(
-        'event - INPUT status poller - new iState: ',
-        this.iState
-      );
-    });
-    // Audio-Muting Polling
-    const mStatusEmitter = pollingtoevent(
-      done => {
-        this.platform.log.debug('start MUTE polling..');
-        const isResponse = this.getMuteState('m_statuspoll');
-        done(null, isResponse, this.attemptCount);
-      },
-      {
-        longpolling: true,
-        interval: this.interval * 1000,
-        longpollEventName: 'm_statuspoll',
-      }
-    );
-
-    mStatusEmitter.on('m_statuspoll', (isMuted: boolean) => {
-      this.mState = isMuted;
-      this.platform.log.debug(
-        'event - MUTE status poller - new mState: ',
-        this.mState
-      );
-    });
-    // Volume Polling
-    const vStatusEmitter = pollingtoevent(
-      done => {
-        this.platform.log.debug('start VOLUME polling..');
-        const response = this.getVolumeState('v_statuspoll');
-        done(null, response, this.attemptCount);
-      },
-      {
-        longpolling: true,
-        interval: this.interval * 1000,
-        longpollEventName: 'v_statuspoll',
-      }
-    );
-
-    vStatusEmitter.on('v_statuspoll', (data: number) => {
-      this.vState = data;
-      this.platform.log.debug(
-        'event - VOLUME status poller - new vState: ',
-        this.vState
-      );
-    });
+    poll();
+    setInterval(poll, this.interval * 1000);
   }
 
   private getPowerState(context) {
