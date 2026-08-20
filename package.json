@@ -1,7 +1,7 @@
 {
   "name": "@jabrown93/homebridge-onkyo",
   "displayName": "Onkyo",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Homebridge plugin for Onkyo Receivers",
   "keywords": [
     "homebridge-plugin",
