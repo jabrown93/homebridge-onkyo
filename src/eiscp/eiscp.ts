@@ -1,6 +1,5 @@
 import net from 'net';
 import dgram from 'dgram';
-import async from 'async';
 import util from 'util';
 
 import { EventEmitter } from 'events';
@@ -18,7 +17,8 @@ export class Eiscp extends EventEmitter {
   private is_connected: boolean;
   private eiscp?: net.Socket;
   private readonly log: Logger | Console;
-  private readonly send_queue?;
+  /** Tail of the serial send chain; each queued command links onto the previous one. */
+  private send_queue: Promise<void> = Promise.resolve();
   private readonly COMMANDS: EiscpCommands;
   private readonly COMMAND_MAPPINGS: EiscpCommandMappings;
   private readonly VALUE_MAPPINGS: EiscpValueMappings;
@@ -52,41 +52,51 @@ export class Eiscp extends EventEmitter {
     this.COMMAND_MAPPINGS = eiscp_commands.command_mappings;
     this.VALUE_MAPPINGS = eiscp_commands.value_mappings;
     this.MODELSETS = eiscp_commands.modelsets;
-    this.send_queue = async.queue((data, callback) => {
-      /*
-          Syncronous queue which sends commands to device
-        callback(bool error, string error_message)
-        */
-      if (this.is_connected) {
-        this.emit(
-          'debug',
-          util.format(
-            'DEBUG (sent_command) Sent command to %s:%s - %s',
-            this.config.host,
-            this.config.port,
-            data
-          )
-        );
-
-        this.eiscp?.write(this.eiscp_packet(data));
-
-        setTimeout(callback, this.config.send_delay);
-        return;
-      }
-
-      this.emit(
-        'error',
-        util.format(
-          "ERROR (send_not_connected) Not connected, can't send data: %j",
-          data
-        )
-      );
-    }, 1);
   }
 
   private in_modelsets(set: string) {
     // returns true if set is in modelsets false otherwise
     return this.config.modelsets.indexOf(set) !== -1;
+  }
+
+  /**
+   * Queues one command for serial delivery to the receiver.
+   *
+   * The receiver drops commands that arrive back to back, so sends are chained
+   * rather than run concurrently and each waits `send_delay` before the next
+   * begins. The chain is kept alive past a rejection so one failed send does
+   * not wedge every command queued behind it.
+   */
+  private enqueue_send(data: string): Promise<void> {
+    const sent = this.send_queue.then(() => {
+      if (!this.is_connected) {
+        const message = util.format(
+          "ERROR (send_not_connected) Not connected, can't send data: %j",
+          data
+        );
+        this.emit('error', message);
+        throw new Error(message);
+      }
+
+      this.emit(
+        'debug',
+        util.format(
+          'DEBUG (sent_command) Sent command to %s:%s - %s',
+          this.config.host,
+          this.config.port,
+          data
+        )
+      );
+
+      this.eiscp?.write(this.eiscp_packet(data));
+
+      return new Promise<void>(resolve =>
+        setTimeout(resolve, this.config.send_delay)
+      );
+    });
+
+    this.send_queue = sent.catch(() => undefined);
+    return sent;
   }
 
   private eiscp_packet(data) {
@@ -645,11 +655,12 @@ export class Eiscp extends EventEmitter {
         callback only tells you that the command was sent but not that it succsessfully did what you asked
       */
     if (typeof data !== 'undefined' && data !== '') {
-      this.send_queue.push(data, err => {
-        if (typeof callback === 'function') {
-          callback(err, null);
-        }
-      });
+      // Callers compare the error argument strictly against undefined, so a
+      // successful send must pass undefined rather than null.
+      this.enqueue_send(data).then(
+        () => callback?.(undefined, null),
+        (error: unknown) => callback?.(error, null)
+      );
     } else if (typeof callback === 'function') {
       callback(true, 'No data provided.');
     }
@@ -671,17 +682,7 @@ export class Eiscp extends EventEmitter {
     /*
         Returns all commands in given zone
       */
-    const result = [];
-    async.each(
-      Object.keys(this.COMMAND_MAPPINGS[zone]),
-      (cmd, cb) => {
-        result.push(cmd as unknown as never);
-        cb();
-      },
-      err => {
-        callback(err, result);
-      }
-    );
+    callback(undefined, Object.keys(this.COMMAND_MAPPINGS[zone]));
   }
 
   public get_command(command, callback) {
@@ -689,7 +690,6 @@ export class Eiscp extends EventEmitter {
         Returns all command values in given zone and command
       */
     let zone;
-    const result = [];
     const parts = command.split('.');
 
     if (parts.length !== 2) {
@@ -700,17 +700,11 @@ export class Eiscp extends EventEmitter {
       command = parts[1];
     }
 
-    async.each(
+    callback(
+      undefined,
       Object.keys(
         this.VALUE_MAPPINGS[zone][this.COMMAND_MAPPINGS[zone][command]]
-      ),
-      (val, cb) => {
-        result.push(val as unknown as never);
-        cb();
-      },
-      err => {
-        callback(err, result);
-      }
+      )
     );
   }
 }
