@@ -1,26 +1,31 @@
 import {
-  API,
-  DynamicPlatformPlugin,
-  Logger,
-  PlatformAccessory,
-  PlatformConfig,
+  type API,
+  type DynamicPlatformPlugin,
+  type Logger,
+  type PlatformAccessory,
 } from 'homebridge';
-
 import { Eiscp } from './eiscp/eiscp.js';
-import { OnkyoReceiver } from './onkyoReceiver.js';
+import { OnkyoReceiver } from './onkyo-receiver.js';
+import { type Config } from './eiscp/config.js';
 
 export class OnkyoPlatform implements DynamicPlatformPlugin {
   public readonly api: API;
-  public readonly config: PlatformConfig;
+  public readonly config: Config;
   public readonly log: Logger;
   public readonly receiverAccessories: OnkyoReceiver[];
   public readonly accessories: PlatformAccessory[];
   public readonly existingAccessories: Map<string, PlatformAccessory>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public readonly connections: Record<string, any>;
+
+  public readonly connections: Record<string, Eiscp>;
   public numberReceivers?: number;
 
-  constructor(log: Logger, config: PlatformConfig, api: API) {
+  constructor(log: Logger, config: Config, api: API) {
+    if (api.serverVersion.startsWith('1.')) {
+      log.warn(
+        'This plugin will drop support for Homebridge 1.x in a future release. Please upgrade to Homebridge 2.x.'
+      );
+    }
+
     this.api = api;
     this.config = config;
     this.log = log;
@@ -46,29 +51,27 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
     });
   }
 
-  configureAccessory(accessory: PlatformAccessory) {
-    this.existingAccessories.set(accessory.UUID, accessory);
-  }
-
   private createAccessories() {
     this.numberReceivers = this.config.receivers.length;
     this.log.debug('Creating %s receivers...', this.numberReceivers);
     if (this.numberReceivers === 0) {
       return;
     }
-    this.config.receivers.forEach(receiver => {
-      if (!this.connections[receiver.ip_address]) {
+
+    for (const receiver of this.config.receivers) {
+      if (!Object.hasOwn(this.connections, receiver.ip_address)) {
         this.log.debug(
           'Creating new connection for ip %s',
           receiver.ip_address
         );
         this.connections[receiver.ip_address] = new Eiscp(this.log);
         this.connections[receiver.ip_address].connect({
-          host: receiver['ip_address'],
+          host: receiver.ip_address,
           reconnect: true,
-          model: receiver['model'],
+          model: receiver.model,
         });
       }
+
       const uuid = this.api.hap.uuid.generate(
         'homebridge:homebridge-onkyo' + receiver.name
       );
@@ -81,6 +84,10 @@ export class OnkyoPlatform implements DynamicPlatformPlugin {
         );
       const onkyoReceiver = new OnkyoReceiver(this, receiver, accessory);
       this.receiverAccessories.push(onkyoReceiver);
-    });
+    }
+  }
+
+  configureAccessory(accessory: PlatformAccessory) {
+    this.existingAccessories.set(accessory.UUID, accessory);
   }
 }

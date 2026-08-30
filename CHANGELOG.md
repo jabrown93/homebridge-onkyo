@@ -3,7 +3,35 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.3](https://github.com/jabrown93/homebridge-onkyo/compare/v1.6.2...v1.6.3) (2026-08-20)
+
+## [1.6.2](https://github.com/jabrown93/homebridge-onkyo/compare/v1.6.1...v1.6.2) (2026-08-10)
+
+## [1.6.1](https://github.com/jabrown93/homebridge-onkyo/compare/v1.6.0...v1.6.1) (2026-07-25)
+
+## [1.6.0](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.4...v1.6.0) (2026-07-18)
+
+### Features
+
+* **engines:** standardize Node engines, CI triggers, and deprecate Homebridge 1.x ([#239](https://github.com/jabrown93/homebridge-onkyo/issues/239)) ([4007fe7](https://github.com/jabrown93/homebridge-onkyo/commit/4007fe70c8e3ca06bb36398c9fec88d7626b8e30))
+
+## [1.5.4](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.3...v1.5.4) (2026-07-17)
+
+### Bug Fixes
+
+* **release:** build in prepack instead of gating publish on checks ([#235](https://github.com/jabrown93/homebridge-onkyo/issues/235)) ([4c462dd](https://github.com/jabrown93/homebridge-onkyo/commit/4c462ddff8089ce6ef0125f30fbec7569c07b786)), closes [jabrown93/.github#24](https://github.com/jabrown93/.github/issues/24)
+
+## [1.5.3](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.2...v1.5.3) (2026-07-17)
+
+### Bug Fixes
+
+* **release:** restore changelog bodies by pinning conventionalcommits to v9 ([#234](https://github.com/jabrown93/homebridge-onkyo/issues/234)) ([1a908f9](https://github.com/jabrown93/homebridge-onkyo/commit/1a908f9a7b0d83324c09fe508d3911a3d47f8521))
+
 ## [1.5.2](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.1...v1.5.2) (2026-07-16)
+
+### Bug Fixes
+
+* eISCP UDP discovery crash + dependency pinning cleanup ([#230](https://github.com/jabrown93/homebridge-onkyo/issues/230)) ([925128c](https://github.com/jabrown93/homebridge-onkyo/commit/925128cd1e1dd37d86b910fdce11468fd06c0c2e))
 
 ## [1.5.1](https://github.com/jabrown93/homebridge-onkyo/compare/v1.5.0...v1.5.1) (2026-06-17)
 

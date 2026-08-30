@@ -32,4 +32,4 @@ Config typing lives in `src/receiverConfig.ts` and `src/receiverInputConfig.ts`;
 - Conventional Commits are enforced by commitlint + Husky `commit-msg` hook; non-conforming messages will be rejected and will also break the release pipeline.
 - `lint-staged` runs ESLint (with `--max-warnings=0`) and Prettier on staged files via the Husky `pre-commit` hook.
 - The `src/eiscp/` directory is exempt from `xo` (`xo.ignores`) and contains snake_case identifiers and legacy patterns on purpose — don't "fix" them.
-- Node engine is pinned to `^24.0.0`; Homebridge peer range is `^1.8.0 || ^2.0.0-beta.0`.
+- Node engine supports `^22.12.0 || ^24.11.0 || ^26.0.0`; Homebridge peer range is `^1.8.0 || ^2.0.0-beta.0` (1.x is deprecated and will be dropped in a future major release).

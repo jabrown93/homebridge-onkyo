@@ -1,6 +1,6 @@
-import { ReceiverInputConfig } from './receiverInputConfig.js';
+import { type ReceiverInputConfig } from './receiver-input-config.js';
 
-export interface ReceiverConfig {
+export type ReceiverConfig = {
   default_input?: string;
   default_volume?: number;
   filter_inputs?: boolean;
@@ -14,4 +14,4 @@ export interface ReceiverConfig {
   serial?: string;
   volume_type?: string;
   zone: string;
-}
+};

@@ -124,3 +124,6 @@ web_modules/
 
 /test/hbConfig
 homebridge.log
+
+**/.worktrees
+.pi/
