@@ -53,7 +53,7 @@
     "prepack": "npm-run-all clean compile"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.2.2",
+    "@commitlint/cli": "21.2.3",
     "@jabrown93/dev-config": "1.2.3",
     "@types/js-yaml": "4.0.9",
     "@types/node": "24.13.6",
