@@ -9,7 +9,14 @@
 [![Release](https://img.shields.io/github/v/release/jabrown93/homebridge-onkyo)](https://github.com/jabrown93/homebridge-onkyo/releases)
 [![Issues](https://img.shields.io/github/issues/jabrown93/homebridge-onkyo)](https://github.com/jabrown93/homebridge-onkyo/issues)
 
-## WARNING: This plugin is not actively maintained except for automated dependency updates. Issues/bugs are unlikely to be addressed. Use at your own risk
+## DECOMMISSIONED: This plugin is no longer maintained and will not receive any further support, fixes, or releases
+
+The upstream [ToddGreenfield/homebridge-onkyo](https://github.com/ToddGreenfield/homebridge-onkyo) is also no longer maintained. Use its recommended successor instead:
+
+- Source: https://github.com/fredsocial/homebridge-onkyo-26
+- npm: https://www.npmjs.com/package/homebridge-onkyo-26
+
+Issues and pull requests on this repository will not be reviewed.
 
 > Homebridge 1.x support is deprecated and will be removed in a future major release — please upgrade to Homebridge 2.x. Requires Node.js `^22.12.0`, `^24.11.0`, or `^26.0.0`.
 

@@ -2,7 +2,7 @@
 
 Homebridge dynamic platform plugin (`@jabrown93/homebridge-onkyo`) that exposes Onkyo / Integra AV receivers to HomeKit over the eISCP (Integra Serial Communication Protocol over Ethernet, TCP port 60128). ESM, Node 24, TypeScript strict mode.
 
-The repo's own README declares the plugin is not actively maintained beyond dependency updates — most PRs landing on `main` are Renovate updates. Code changes should stay minimal and targeted.
+The plugin is decommissioned; the README points users to `homebridge-onkyo-26`. Do not make further code changes.
 
 ## Common commands
 
